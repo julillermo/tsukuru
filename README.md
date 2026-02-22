@@ -1,2 +1,2 @@
-# tsukuru
+# tsukuru 作る（つくる）
 Vocabulary and concept randomizer for reviewing (currently only Genki)
