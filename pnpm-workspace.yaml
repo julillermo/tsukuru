@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+syncInjectedDepsAfterScripts:
+  - build
+minimumReleaseAge: 4320
+injectWorkspacePackages: true
+# forceLegacyDeploy: true
