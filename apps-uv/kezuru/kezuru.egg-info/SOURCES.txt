@@ -1,0 +1,8 @@
+README.md
+main.py
+pyproject.toml
+kezuru.egg-info/PKG-INFO
+kezuru.egg-info/SOURCES.txt
+kezuru.egg-info/dependency_links.txt
+kezuru.egg-info/requires.txt
+kezuru.egg-info/top_level.txt
