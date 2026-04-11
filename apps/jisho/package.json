@@ -4,15 +4,22 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:migrate": "drizzle-kit generate && drizzle-kit migrate",
+    "docker:db": "docker run --name drizzle-postgres -e POSTGRES_PASSWORD=drizzle -d -p 5433:5432 postgres"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
-    "hono": "^4.12.12"
+    "dotenv": "^17.4.1",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.12.12",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
-    "tsx": "^4.7.1",
+    "@types/pg": "^8.20.0",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }
