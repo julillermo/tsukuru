@@ -7,16 +7,20 @@ def main():
     print("Hello from kezuru!\n")
 
     # # optional for testing
-    vocab_file_path = get_path_of_latest_file("./.cache/n5/vocab")
-    jlpt_level: JLPTLevelType = "n5"
+    # vocab_file_path = get_path_of_latest_file("./.cache/n5/vocab")
+    # jlpt_level: JLPTLevelType = "n5"
 
-    scrape_vocab(
-        vocab_file_path=vocab_file_path,
-        level=jlpt_level,
-        delay_seconds=1,
-    )
+    # scrape_vocab(
+    #     vocab_file_path=vocab_file_path,
+    #     level=jlpt_level,
+    #     delay_seconds=1,
+    # )
 
-    # scrape_row_a_temp()
+    # # optional for testing
+    vocab_row_file_path = get_path_of_latest_file("./.cache/n5/vocab/row")
+    # jlpt_level: JLPTLevelType = "n5"
+
+    scrape_row_a_temp(vocab_row_file_path)
 
 
 if __name__ == "__main__":

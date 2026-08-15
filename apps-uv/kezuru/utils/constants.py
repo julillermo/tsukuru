@@ -2,7 +2,9 @@ from utils.types import (
     CJKDanGroupType,
     CJKGyouGroupType,
     CJKMiscGroupType,
-    RomanjiDanGroup,
+    CJKWordClassKanjiType,
+    EnglishWordClassType,
+    RomanjiDanGroupType,
     RomanjiGyouGroupType,
 )
 
@@ -40,10 +42,29 @@ DAN_GROUPS: list[CJKDanGroupType] = [
     "お段",  # o-words
 ]
 
-ROMANJI_DAN_DICT: dict[RomanjiDanGroup, CJKDanGroupType] = {
+ROMANJI_DAN_DICT: dict[RomanjiDanGroupType, CJKDanGroupType] = {
     "a": "あ段",
     "i": "い段",
     "u": "う段",
     "e": "え段",
     "o": "お段",
+}
+
+CJK_ENGLISH_WORD_CLASS_DICT: dict[CJKWordClassKanjiType, EnglishWordClassType] = {
+    "名": "noun",
+    "代": "pronoun",
+    "動I": "type I verb",
+    "動II": "type II verb",
+    "動III": "type III verb",
+    "形": "adjective",
+    "形動": "adjectival noun",
+    "副": "adverb",
+    "連体": "attribute",
+    "接": "conjunction",
+    "感": "interjection",
+    "助動": "auxiliary",
+    "助": "particle",
+    "頭": "prefix",
+    "尾": "suffix",
+    "連": "compound",
 }

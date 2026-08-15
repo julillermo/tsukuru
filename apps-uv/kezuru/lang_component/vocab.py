@@ -1,5 +1,4 @@
 import json
-import sys
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -8,16 +7,19 @@ from typing import cast
 import requests
 from bs4 import BeautifulSoup as bSoup
 from bs4.element import Tag
-from utils.file import debug_save_text_to_file, save_text_to_file
+from utils.file import save_text_to_file
 from utils.type_guard import isNull
 from utils.types import (
     CJKGyouGroupType,
     CJKGyouOrMiscType,
     JLPTComponentType,
     JLPTLevelType,
-    VocabEntry,
+    VocabEntryType,
 )
-from utils.vocab import filter_from_page_element_list
+from utils.vocab import (
+    extract_english_word_classes,
+    filter_from_page_element_list,
+)
 
 WIKI_BOOKS_ROOT_URL = "https://en.wikibooks.org"
 WIKI_JLPT_GUIDE_BASE_URL = f"{WIKI_BOOKS_ROOT_URL}/wiki/JLPT_Guide"
@@ -28,6 +30,7 @@ TARGET_RESOURCE_PATH: dict[JLPTLevelType, dict[JLPTComponentType, str]] = {
         "grammar": WIKI_JLPT_GUIDE_BASE_URL + "/JLPT_N5_Grammar",
     }
 }
+# TODO: This OUTPUT_PATHS is unused. Incorporate it
 OUTPUT_PATHS: dict[JLPTLevelType, dict[JLPTComponentType, str]] = {
     "n5": {
         "vocab": "./data/n5_vocab.json",
@@ -67,7 +70,6 @@ def scrape_vocab(
     else:
         url = TARGET_RESOURCE_PATH["n5"]["vocab"]
         print(f"Fetching Wikipedia JLPT Guide from the internet: {url}")
-
         vocab_page = requests.get(url=url, headers=SCRAPER_HEADER).content
 
     vocab_soup = bSoup(vocab_page, "html.parser")
@@ -75,7 +77,7 @@ def scrape_vocab(
     current_time = datetime.now(UTC)
     current_time_string = current_time.strftime("%Y-%m-%dT%H:%M:%S")
 
-    if vocab_file_path is None:
+    if isNull(vocab_file_path):
         save_text_to_file(
             dir=Path(f"./.cache/{level}/vocab"),
             filename=f"html-page-{current_time_string}.html",
@@ -118,102 +120,127 @@ def scrape_vocab(
             contents=json.dumps(obj=gyou_links_dict, ensure_ascii=False),
         )
 
+    # TODO: Implement this further later on
     # Delay between requests to avoid overwhelming the server
-    # !: Currently not relevent since I'm only making single requests at a time
-    # TODO: Implement this further later one
+    # Currently irrelevent since I'm only making single requests at a time
     if delay_seconds is not None:
         time.sleep(delay_seconds)
 
 
-def scrape_row_a_temp(delay: int | None = None):
+def scrape_row_a_temp(
+    vocab_row_file_path: str | None = None, delay_seconds: int | None = None
+):
+    # TODO: Add function description for intellisense
+    # TODO: Currently a costant. Make this as input comming from scrape_vocab() outout
     url = "https://en.wikibooks.org/wiki/JLPT_Guide/JLPT_N5_Vocabulary/Row_A"
+    cache_exists = not isNull(vocab_row_file_path)
 
-    print(f"Fetching Wikipedia JLPT N5 vocabulary Row A: {url}")
+    if cache_exists:
+        print(
+            "Loading JLPT N5 row A vocab from latest cached vocab file:",
+            vocab_row_file_path,
+        )
+        with open(vocab_row_file_path, mode="r", encoding="utf-8") as file:
+            vocab_page = file.read()
+    else:
+        print(f"Fetching JLPT N5 row A vocab from the internet: {url}")
+        vocab_page = requests.get(url=url, headers=SCRAPER_HEADER).content
 
-    vocab_page = requests.get(url=url, headers=SCRAPER_HEADER).content
-    time.sleep(1)
+    vocab_soup = bSoup(vocab_page, "html.parser")
 
     current_time = datetime.now(UTC)
     current_time_string = current_time.strftime("%Y-%m-%dT%H:%M:%S")
 
-    vocab_soup = bSoup(vocab_page, "html.parser")
-    wiki_content = vocab_soup.find("div", class_="mw-content-ltr")
+    if not cache_exists:
+        save_text_to_file(
+            dir=Path("./.cache/n5/vocab/row"),
+            filename=f"html-page-row_a-vocab-{current_time_string}-utc.html",
+            contents=str(vocab_soup.prettify()),
+        )
 
-    if wiki_content is None:
+    wiki_content = vocab_soup.find("div", class_="mw-content-ltr")
+    if isNull(wiki_content):
+        # TODO: Make error messages distinguishable from other similarly messaged errors
+        # TODO: Also check for uncaught errors later on
         raise ValueError("Error: Could not find wiki content in the page.")
 
     dan_group_list = wiki_content.find_all("div", class_="mw-heading2")
-    nextcheck_temp = []
-    word_list: list[VocabEntry] = []
-    word_temp: VocabEntry = {
-        "kana": "",
-        "kanji": None,
-        "classification": None,
-        "definition": "",
-    }
+    word_list: list[VocabEntryType] = []
 
     for dan_element in dan_group_list:
         table_sibling = dan_element.find_next_sibling(name="table")
-
-        if table_sibling is None:
-            break
+        if isNull(table_sibling):
+            continue
 
         table_body = table_sibling.find(recursive=False)
-
-        if table_body is None:
-            break
+        if isNull(table_body):
+            continue
 
         for table_row in table_body.children:
             if isinstance(table_row, Tag):
-                table_row.find(recursive=False)
-
-                if table_row.name == "th":
+                # Skip the header row
+                if not isNull(table_row.th):
                     continue
 
-                for idx, row_contents in enumerate(table_row.children):
-                    """
-                    col 0 -> Word number in the book (can be skipped)
-                    col 1 -> Kana writing
-                    col 2 -> Kanji writing (if exists)
-                    col 3 -> Word classification
-                    col 4 -> Definition
-                    """
-                    if idx == 0:
-                        continue
-                    elif idx == 1:
-                        if isinstance(row_contents, Tag):
-                            a_tag = row_contents.a
+                word_temp: VocabEntryType = {
+                    "wikipediaIndex": None,
+                    "kana": "",
+                    "kanji": None,
+                    "classification": [],
+                    "definition": "",
+                }
 
-                            a_tag_extists = a_tag is not None
-                            a_tag_string_exists = (
-                                a_tag_extists and a_tag.string is not None
+                for col_idx, col_data in enumerate(
+                    filter_from_page_element_list(table_row.contents, "\n")
+                ):
+                    """
+                    col_idx 0 -> Wikipedia word index
+                    col_idx 1 -> Kana writing
+                    col_idx 2 -> Kanji writing (if exists)
+                    col_idx 3 -> Word classification
+                    col_idx 4 -> Definition
+                    """
+                    col_data_tag = cast(Tag, col_data)
+                    # Wikipedia word index
+                    if col_idx == 0:
+                        if not isNull(col_data_tag.string):
+                            # TODO: improve int conversion. Works for now, but not general enough to work in other cases
+                            word_temp["wikipediaIndex"] = int(col_data_tag.string)
+                    # Kana writing
+                    elif col_idx == 1:
+                        if not isNull(col_data_tag.a) and not isNull(
+                            col_data_tag.a.string
+                        ):
+                            word_temp["kana"] = col_data_tag.a.string.strip()
+                    # Kanji writing
+                    elif col_idx == 2:
+                        if not isNull(col_data_tag.a) and not isNull(
+                            col_data_tag.a.string
+                        ):
+                            word_temp["kanji"] = col_data_tag.a.string.strip()
+                    # Word classification
+                    elif col_idx == 3:
+                        if not isNull(col_data_tag.string):
+                            word_temp["classification"] = extract_english_word_classes(
+                                cjk_word_class_str=col_data_tag.string
+                            )
+                    # Definition
+                    elif col_idx == 4:  # noqa: SIM102
+                        if not isNull(col_data_tag.string):
+                            word_temp["definition"] = col_data_tag.string.replace(
+                                "\n", ""
                             )
 
-                            if a_tag_extists and a_tag_string_exists:
-                                word_temp["kana"] = a_tag.string.strip()
-                    elif idx == 2:
-                        if isinstance(row_contents, Tag):
-                            a_tag = row_contents.a
+                word_list.append(word_temp)
 
-                            a_tag_extists = a_tag is not None
-                            a_tag_string_exists = (
-                                a_tag_extists and a_tag.string is not None
-                            )
+    save_text_to_file(
+        dir=Path("./.cache/n5/vocab"),
+        filename="ABC.json",
+        contents=json.dumps(obj=word_list, ensure_ascii=False),
+    )
 
-                            if a_tag_extists and a_tag_string_exists:
-                                word_temp["kanji"] = a_tag.string.strip()
-                            # ? JULIUS: was las here!
-                            # Was last trying to extract the contents from the row
-                            # I didn't test this before leaving, so this likely doesn't work yet
-
-        nextcheck_temp.append(table_body)
-
-    with open(
-        f"./.cache/n5/vocab/rowA.html",
-        mode="w",
-        encoding="utf-8",
-    ) as file:
-        file.write(str(nextcheck_temp))
-
-    if delay is not None:
-        time.sleep(delay)
+    # TODO: Implement this further later on
+    # Delay between requests to avoid overwhelming the server
+    # Currently irrelevent since I'm only making single requests at a time
+    if not isNull(delay_seconds):
+        time.sleep(delay_seconds)

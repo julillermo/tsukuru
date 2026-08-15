@@ -31,9 +31,9 @@ RomanjiGyouGroupType = Literal[
 ]
 
 CJKDanGroupType = Literal["あ段", "い段", "う段", "え段", "お段"]
-RomanjiDanGroup = Literal["a", "i", "u", "e", "o"]
+RomanjiDanGroupType = Literal["a", "i", "u", "e", "o"]
 
-CJKWordClassKanji = Literal[
+CJKWordClassKanjiType = Literal[
     "名",  # noun
     "代",  # pronoun
     "動I",  # type I verb
@@ -51,7 +51,7 @@ CJKWordClassKanji = Literal[
     "尾",  # suffix
     "連",  # compound
 ]
-EnglishWordClass = Literal[
+EnglishWordClassType = Literal[
     "noun",
     "pronoun",
     "type I verb",
@@ -71,8 +71,9 @@ EnglishWordClass = Literal[
 ]
 
 
-class VocabEntry(TypedDict):
+class VocabEntryType(TypedDict):
+    wikipediaIndex: int | None
     kana: str
     kanji: str | None
-    classification: EnglishWordClass | None
+    classification: list[EnglishWordClassType]
     definition: str
