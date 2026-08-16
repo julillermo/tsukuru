@@ -7,4 +7,15 @@ requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4>=4.14.3",
     "requests>=2.33.1",
+    "rich>=15.0.0",
 ]
+
+[tool.uv]
+exclude-newer = "1 week"
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["lang_component*", "utils*"]
