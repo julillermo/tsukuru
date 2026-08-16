@@ -1,26 +1,37 @@
-from lang_component.vocab import scrape_row_a_temp, scrape_vocab
-from utils.file import get_path_of_latest_file
+from lang_component.vocab import scrape_vocab
 from utils.types import JLPTLevelType
 
 
 def main():
-    print("Hello from kezuru!\n")
+    # ! As of checking on 17 Aug 2026, only n5 and n4 can be properly scraped for vocab
+    # Note however these already cover 1200+ scraped words
+    #   n5 ~ 650 words
+    #   n4 ~ 630 words
+    jlpt_levels: list[JLPTLevelType] = [
+        "n5",
+        "n4",
+        # "n3", # missing / empty / malformed wiki page
+        # "n2", # missing / empty / malformed wiki page
+        # "n1", # missing / empty / malformed wiki page
+    ]
 
-    # # optional for testing
-    # vocab_file_path = get_path_of_latest_file("./.cache/n5/vocab")
-    # jlpt_level: JLPTLevelType = "n5"
+    scrape_vocab(levels=jlpt_levels, delay_seconds=5)
 
-    # scrape_vocab(
-    #     vocab_file_path=vocab_file_path,
-    #     level=jlpt_level,
-    #     delay_seconds=1,
-    # )
-
-    # # optional for testing
-    vocab_row_file_path = get_path_of_latest_file("./.cache/n5/vocab/row")
-    # jlpt_level: JLPTLevelType = "n5"
-
-    scrape_row_a_temp(vocab_row_file_path)
+    # CONTINUATION:
+    # - Continue to scrape N5 & N4 Kanji
+    # - Continue to scrape N5, N4, N3 Grammar
+    # - Use an API (if available) to check whether the page has been updated
+    #       before fetching. If not updated, use the cached html instead.
+    # - Have a separate dedicated CLI for check for updates.
+    #       Based on the last updates to the page, I don't think it would get
+    #       any meaningful update anytime soon.
+    # - Host the output in a dedicated repo, potential updates can be
+    #       tracked with git diff
+    # - Make use of rich (package) primitives for CLI visuals improvement
+    # - Extend the main() to be usable and a CLI tool
+    # - Refactor + trim down unused code.
+    # - CI/CD integration
+    # - Address TODO comments
 
 
 if __name__ == "__main__":

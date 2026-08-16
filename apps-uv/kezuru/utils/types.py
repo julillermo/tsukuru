@@ -15,8 +15,6 @@ CJKGyouGroupType = Literal[
     "ら行",
     "わ行",
 ]
-CJKMiscGroupType = Literal["/misc"]
-type CJKGyouOrMiscType = CJKGyouGroupType | CJKMiscGroupType
 RomanjiGyouGroupType = Literal[
     "a",
     "ka",
@@ -29,6 +27,13 @@ RomanjiGyouGroupType = Literal[
     "ra",
     "wa",
 ]
+
+CJKMiscGroupType = Literal["/misc", "misc"]
+CJKGyouOrMiscType = CJKGyouGroupType | CJKMiscGroupType
+
+JlptResourceRootType = Literal["root"]
+JlptResourceVocabObjKeysType = RomanjiGyouGroupType | JlptResourceRootType
+JlptRscRootGyouObjType = dict[JlptResourceVocabObjKeysType, str]
 
 CJKDanGroupType = Literal["あ段", "い段", "う段", "え段", "お段"]
 RomanjiDanGroupType = Literal["a", "i", "u", "e", "o"]

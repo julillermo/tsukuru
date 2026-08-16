@@ -1,7 +1,7 @@
 import warnings
 from typing import cast
 
-from bs4 import NavigableString, PageElement
+from rich import print
 
 from utils.constants import CJK_ENGLISH_WORD_CLASS_DICT
 from utils.string import remove_parenthesis_plus
@@ -9,23 +9,6 @@ from utils.types import (
     CJKWordClassKanjiType,
     EnglishWordClassType,
 )
-
-
-def filter_from_page_element_list(
-    list_var: list[PageElement], pattern: PageElement | str
-) -> list[PageElement]:
-    """
-    Remove from a list of `PageElement`s based on a provided pattern
-
-    Args:
-        - `list_var` -> List of elements to filter
-        - `pattern` -> Pattern to remove from the resulting list
-    """
-    pattern_to_use = (
-        pattern if isinstance(pattern, PageElement) else NavigableString(pattern)
-    )
-
-    return [item for item in list_var if item != pattern_to_use]
 
 
 def get_english_word_class(
@@ -48,7 +31,7 @@ def get_english_word_class_list(
         except KeyError as err:
             warnings.warn(f"KeyError: {err}")
             print(
-                f"Ignored word classification annotation '{cjk_word_class}'. Proceeding ...\n"
+                f"[yellow]Ignored word classification annotation '{cjk_word_class}'. Proceeding ...[/yellow]"
             )
             continue
 
