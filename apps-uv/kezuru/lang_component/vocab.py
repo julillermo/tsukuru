@@ -133,7 +133,7 @@ def scrape_gyou_groups(
     level: JLPTLevelType,
     romanji_gyou: RomanjiGyouGroupType,
     delay_seconds: int | None = 5,
-    link: str | None = None
+    link: str | None = None,
 ):
     # TODO: Add function description for intellisense
     # TODO: Currently a costant. Make this as input comming from scrape_vocab() outout
@@ -149,7 +149,7 @@ def scrape_gyou_groups(
     else:
         if isNull(link):
             url = WIKI_JLPT_LEVEL_RESOUCE_LINK[level]["vocab"][romanji_gyou]
-        else
+        else:
             url = link
 
         print(
