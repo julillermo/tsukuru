@@ -125,6 +125,7 @@ def scrape_vocab(
                 level=level,
                 romanji_gyou=CJK_GYOU_DICT[cjk_gyou],
                 delay_seconds=delay_seconds,
+                # link=gyou_links_dict[cjk_gyou] # The JLPT links to wrong pages
             )
 
 
@@ -132,6 +133,7 @@ def scrape_gyou_groups(
     level: JLPTLevelType,
     romanji_gyou: RomanjiGyouGroupType,
     delay_seconds: int | None = 5,
+    link: str | None = None
 ):
     # TODO: Add function description for intellisense
     # TODO: Currently a costant. Make this as input comming from scrape_vocab() outout
@@ -145,7 +147,11 @@ def scrape_gyou_groups(
         with open(cached_page, mode="r", encoding="utf-8") as file:
             vocab_page = file.read()
     else:
-        url = WIKI_JLPT_LEVEL_RESOUCE_LINK[level]["vocab"][romanji_gyou]
+        if isNull(link):
+            url = WIKI_JLPT_LEVEL_RESOUCE_LINK[level]["vocab"][romanji_gyou]
+        else
+            url = link
+
         print(
             f"[green]Fetching JLPT {level.capitalize()} row {romanji_gyou.capitalize()} vocab from the internet:[/green] {url}"
         )
