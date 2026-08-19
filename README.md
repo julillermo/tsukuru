@@ -17,8 +17,8 @@ Tsukuru is a vocabulary and concept randomizer application for reviewing to aid 
 
 ### Reason for sourcing from Wikibooks
 
-- The other resources I previously found that were specific to N5/N4 were mostly publications or materials with restrictive licensing. The [Wikibooks JLPT content](https://en.wikibooks.org/wiki/JLPT_Guide) is freely availalbe under the [Create Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/), and so is the Jitendex dictionary that I plan to supplement the missing informaiton with.
-- I considered using [Jitendex](https://jitendex.org/pages/legal.html), the primary dictionary I use with the [Yomitan](https://github.com/yomidevs/yomitan) project, but I was more interested in an N5/N4 subset that also tags language concepts. The Wikibooks resource more readily lends itself to use as instructional material. Jitendex will instead be used to supplement the missing information.
+- The other resources I previously found that were specific to N5/N4 were mostly publications or materials with restrictive licensing. The [Wikibooks JLPT content](https://en.wikibooks.org/wiki/JLPT_Guide) is freely availalbe under the [Create Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/).
+- I considered using [Jitendex](https://jitendex.org/pages/legal.html), the primary dictionary I use with the [Yomitan](https://github.com/yomidevs/yomitan) project, because it also follows [Create Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/). However, I was more interested in an N5/N4 subset that also tags language concepts, and the Wikibooks resource more readily lends itself for instructional material use. Jitendex will instead be used to supplement the missing information.
 
 ## Quick Start
 
