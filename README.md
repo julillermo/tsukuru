@@ -8,7 +8,7 @@ Tsukuru is a vocabulary and concept randomizer application for reviewing to aid 
 - **Kezuru** (data sourcing) ![Kezuru main-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=main-branch) ![Kezuru kezuru-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fkezuru%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=kezuru-branch&color=pink)
   - [Kezuru data repo](https://github.com/julillermo/kezuru-jlpt-data)
 
-- **Jisho** (backend server) ![Jisho status](https://img.shields.io/badge/status-planned-yellow)
+- **Jisho** (backend server) ![Jisho status](https://img.shields.io/badge/status-starting-green)
 - **Kami** (frontend) ![Kami status](https://img.shields.io/badge/status-planned-yellow)
 
 ## Motivation
