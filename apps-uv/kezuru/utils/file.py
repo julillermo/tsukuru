@@ -43,6 +43,6 @@ def save_text_to_file(dir: Path, filename: str, contents: str) -> None:
 
 
 def debug_save_text_to_file(
-    contents: str,
+    contents: str, file_name: str = "temp.html", dir: Path = Path("./temp/")
 ) -> None:
-    save_text_to_file(dir=Path("./temp/"), filename="temp.html", contents=contents)
+    save_text_to_file(dir=dir, filename=file_name, contents=contents)

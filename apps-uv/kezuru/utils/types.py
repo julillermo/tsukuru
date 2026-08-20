@@ -82,3 +82,14 @@ class VocabEntryType(TypedDict):
     kanji: str | None
     classification: list[EnglishWordClassType]
     definition: str
+
+
+class ExampleSentenceType(TypedDict):
+    sentence: str
+    meaning: str
+
+
+class GrammarEntryType(TypedDict):
+    concept: str
+    definition: str
+    examples: list[ExampleSentenceType]

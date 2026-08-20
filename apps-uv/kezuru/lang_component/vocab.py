@@ -8,18 +8,17 @@ from typing import cast
 import requests
 from bs4 import BeautifulSoup as bSoup
 from bs4.element import Tag
-from rich import print
+from rich import print as rprint
 from utils.constants import (
     CACHE_DIRS,
     CJK_GYOU_DICT,
-    JLPT_LEVELS,
     OUTPUT_DIR,
     SCRAPER_HEADER,
     WIKI_BOOKS_ROOT_URL,
     WIKI_JLPT_LEVEL_RESOUCE_LINK,
 )
 from utils.file import get_path_of_latest_file, save_text_to_file
-from utils.logic import filter_from_page_element_list
+from utils.soup import filter_from_page_element_list
 from utils.type_guard import isCJKMiscGroup, isNull
 from utils.types import (
     CJKGyouGroupType,
@@ -34,7 +33,7 @@ from utils.vocab import extract_english_word_classes
 
 
 def scrape_vocab(
-    levels: list[JLPTLevelType] = JLPT_LEVELS,
+    levels: list[JLPTLevelType],
     delay_seconds: int | None = 5,
 ) -> None:
     """
@@ -42,16 +41,13 @@ def scrape_vocab(
 
     Args:
         - `level` -> JLPT level to scrape vocab for.
-        - `vocab_file_path` [optional] -> Path to cached vocab HTML file.
-            If `None`, fetches from the internet.
-            If provided, the file will be loaded and used instead of making a new request.
         - `delay_seconds` [optional] -> Seconds to wait after request. `None` = no sleep.
     """
 
     for level in levels:
         cached_page = get_path_of_latest_file(CACHE_DIRS[level]["vocab"]["root"])
         if not isNull(cached_page):
-            print(
+            rprint(
                 f"[green]Loading Wikipedia JLPT {level.capitalize()} root vocabulary page from latest cached html:[/green] \
                 {cached_page}",
             )
@@ -59,21 +55,20 @@ def scrape_vocab(
                 vocab_page = file.read()
         else:
             url = WIKI_JLPT_LEVEL_RESOUCE_LINK[level]["vocab"]["root"]
-            print(
+            rprint(
                 f"[green]Fetching Wikipedia JLPT {level.capitalize()} root vocabulary page from the internet:[/green] {url}"
             )
             if delay_seconds is not None:
-                print(
+                rprint(
                     f"[magenta]Practicing {delay_seconds} second delay before fetching as courtesy to not overwhelm host with requests ...[/magenta]"
                 )
                 time.sleep(delay_seconds)
 
             vocab_page = requests.get(url=url, headers=SCRAPER_HEADER).content
 
-        vocab_soup = bSoup(vocab_page, "html.parser")
+        vocab_soup = bSoup(vocab_page, "html5lib")
 
-        current_time = datetime.now(UTC)
-        current_time_string = current_time.strftime("%Y-%m-%dT%H:%M:%S")
+        current_time_string = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S")
 
         if isNull(cached_page):
             save_text_to_file(
@@ -90,7 +85,7 @@ def scrape_vocab(
         gyou_ul_element = wiki_content.find(name="ul", recursive=False)
         if isNull(gyou_ul_element):
             # TODO: address unhandled error
-            raise ValueError("Error: Could not find wiki content in the page.")
+            raise ValueError("Error: Could not find gyou element in the page.")
 
         gyou_list = filter_from_page_element_list(
             list_var=gyou_ul_element.contents, pattern="\n"
@@ -140,7 +135,7 @@ def scrape_gyou_groups(
     cached_page = get_path_of_latest_file(CACHE_DIRS[level]["vocab"][romanji_gyou])
 
     if not isNull(cached_page):
-        print(
+        rprint(
             f"[green]Loading JLPT {level.capitalize()} row {romanji_gyou.capitalize()} vocab from latest cached html:[/green] \
             {cached_page}",
         )
@@ -152,17 +147,17 @@ def scrape_gyou_groups(
         else:
             url = link
 
-        print(
+        rprint(
             f"[green]Fetching JLPT {level.capitalize()} row {romanji_gyou.capitalize()} vocab from the internet:[/green] {url}"
         )
         if not isNull(delay_seconds):
-            print(
+            rprint(
                 f"[magenta]Practicing {delay_seconds} second delay before fetching as courtesy to not overwhelm host with requests ...[/magenta]"
             )
             time.sleep(delay_seconds)
         vocab_page = requests.get(url=url, headers=SCRAPER_HEADER).content
 
-    vocab_soup = bSoup(vocab_page, "html.parser")
+    vocab_soup = bSoup(vocab_page, "html5lib")
 
     current_time = datetime.now(UTC)
     current_time_string = current_time.strftime("%Y-%m-%dT%H:%M:%S")
@@ -198,7 +193,7 @@ def scrape_gyou_groups(
                 if not isNull(table_row.th):
                     continue
 
-                word_temp: VocabEntryType = {
+                vocab_temp: VocabEntryType = {
                     "wikipediaIndex": None,
                     "kana": "",
                     "kanji": None,
@@ -223,15 +218,15 @@ def scrape_gyou_groups(
                             # TODO: improve int conversion. Works for now, but not general enough to work in other cases
                             try:
                                 number_value = int(col_data_tag.string)
-                                print(
+                                rprint(
                                     f"Scraping word: {level.capitalize()}#{number_value}"
                                 )  # TODO: make this optional with a `verbose` flag/argument
-                                word_temp["wikipediaIndex"] = number_value
+                                vocab_temp["wikipediaIndex"] = number_value
                             except ValueError as err:
                                 warnings.warn(
                                     f"Invalid int() conversion error for Wikipedia {level.capitalize()!r} word index '{col_data_tag.string}': {err}"
                                 )
-                                print(
+                                rprint(
                                     f"[yellow]Ignored invalid Wikipedia {level.capitalize()} word index '{col_data_tag.string}'. Proceeding ...[/yellow]"
                                 )
                     # Kana writing
@@ -239,10 +234,10 @@ def scrape_gyou_groups(
                         if not isNull(col_data_tag.a) and not isNull(
                             col_data_tag.a.string
                         ):
-                            word_temp["kana"] = col_data_tag.a.string.strip()
+                            vocab_temp["kana"] = col_data_tag.a.string.strip()
                             continue
                         if not isNull(col_data_tag.string):
-                            word_temp["kana"] = col_data_tag.string.replace(
+                            vocab_temp["kana"] = col_data_tag.string.replace(
                                 "\n", ""
                             ).strip()
                             continue
@@ -251,7 +246,7 @@ def scrape_gyou_groups(
                         if not isNull(col_data_tag.a) and not isNull(
                             col_data_tag.a.string
                         ):
-                            word_temp["kanji"] = col_data_tag.a.string.replace(
+                            vocab_temp["kanji"] = col_data_tag.a.string.replace(
                                 "\n", ""
                             ).strip()
                     # Word classification
@@ -259,26 +254,26 @@ def scrape_gyou_groups(
                         if not isNull(col_data_tag.a) and not isNull(
                             col_data_tag.a.string
                         ):
-                            word_temp["classification"] = extract_english_word_classes(
+                            vocab_temp["classification"] = extract_english_word_classes(
                                 cjk_word_class_str=col_data_tag.a.string
                             )
                             continue
                         if not isNull(col_data_tag.string):
-                            word_temp["classification"] = extract_english_word_classes(
+                            vocab_temp["classification"] = extract_english_word_classes(
                                 cjk_word_class_str=col_data_tag.string
                             )
                             continue
                     # Definition
                     elif col_idx == 4:  # noqa: SIM102
                         if not isNull(col_data_tag.string):
-                            word_temp["definition"] = col_data_tag.string.replace(
+                            vocab_temp["definition"] = col_data_tag.string.replace(
                                 "\n", ""
                             ).strip()
 
-                word_list.append(word_temp)
+                word_list.append(vocab_temp)
 
     save_text_to_file(
         dir=Path(OUTPUT_DIR),
-        filename=f"{level}_{romanji_gyou}_vocab.json",
+        filename=f"vocab_{level}_{romanji_gyou}.json",
         contents=json.dumps(obj=word_list, ensure_ascii=False),
     )

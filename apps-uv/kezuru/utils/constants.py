@@ -243,29 +243,29 @@ CACHE_DIRS: dict[
 OUTPUT_DIR = "./output/"
 OUTPUT_DIRS: dict[JLPTLevelType, dict[JLPTComponentType, str]] = {
     "n5": {
-        "vocab": f"{OUTPUT_DIR}/n5_vocab.json",
-        "kanji": f"{OUTPUT_DIR}/n5_kanji.json",
-        "grammar": f"{OUTPUT_DIR}/n5_grammar.json",
+        "vocab": f"{OUTPUT_DIR}/vocab_n5.json",
+        "kanji": f"{OUTPUT_DIR}/kanji_n5.json",
+        "grammar": f"{OUTPUT_DIR}/grammar_n5.json",
     },
     "n4": {
-        "vocab": f"{OUTPUT_DIR}/n4_vocab.json",
-        "kanji": f"{OUTPUT_DIR}/n4_kanji.json",
-        "grammar": f"{OUTPUT_DIR}/n4_grammar.json",
+        "vocab": f"{OUTPUT_DIR}/vocab_n4.json",
+        "kanji": f"{OUTPUT_DIR}/kanji_n4.json",
+        "grammar": f"{OUTPUT_DIR}/grammar_n4.json",
     },
     "n3": {
-        "vocab": f"{OUTPUT_DIR}/n3_vocab.json",
-        "kanji": f"{OUTPUT_DIR}/n3_kanji.json",
-        "grammar": f"{OUTPUT_DIR}/n3_grammar.json",
+        "vocab": f"{OUTPUT_DIR}/vocab_n3.json",
+        "kanji": f"{OUTPUT_DIR}/kanji_n3.json",
+        "grammar": f"{OUTPUT_DIR}/grammar_n3.json",
     },
     "n2": {
-        "vocab": f"{OUTPUT_DIR}/n2_vocab.json",
-        "kanji": f"{OUTPUT_DIR}/n2_kanji.json",
-        "grammar": f"{OUTPUT_DIR}/n2_grammar.json",
+        "vocab": f"{OUTPUT_DIR}/vocab_n2.json",
+        "kanji": f"{OUTPUT_DIR}/kanji_n2.json",
+        "grammar": f"{OUTPUT_DIR}/grammar_n2.json",
     },
     "n1": {
-        "vocab": f"{OUTPUT_DIR}/n1_vocab.json",
-        "kanji": f"{OUTPUT_DIR}/n1_kanji.json",
-        "grammar": f"{OUTPUT_DIR}/n1_grammar.json",
+        "vocab": f"{OUTPUT_DIR}/vocab_n1.json",
+        "kanji": f"{OUTPUT_DIR}/kanji_n1.json",
+        "grammar": f"{OUTPUT_DIR}/grammar_n1.json",
     },
 }
 

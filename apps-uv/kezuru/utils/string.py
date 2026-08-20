@@ -11,3 +11,16 @@ def remove_parenthesis_plus(str_with_parenthesis: str) -> str:
         else:
             rebuilt_str += char
     return rebuilt_str
+
+
+type TextToReplaceType = str
+type TextReplacementType = str
+
+
+def multiple_replace_char(
+    text: str, patterns: list[tuple[TextToReplaceType, TextReplacementType]]
+) -> str:
+    reconstructed = text
+    for old, new in patterns:
+        reconstructed = reconstructed.replace(old, new)
+    return reconstructed

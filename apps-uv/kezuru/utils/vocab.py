@@ -1,7 +1,7 @@
 import warnings
 from typing import cast
 
-from rich import print
+from rich import print as rprint
 
 from utils.constants import CJK_ENGLISH_WORD_CLASS_DICT
 from utils.string import remove_parenthesis_plus
@@ -30,7 +30,7 @@ def get_english_word_class_list(
             english_word_class_list.append(eng_word_class)
         except KeyError as err:
             warnings.warn(f"KeyError: {err}")
-            print(
+            rprint(
                 f"[yellow]Ignored word classification annotation '{cjk_word_class}'. Proceeding ...[/yellow]"
             )
             continue
