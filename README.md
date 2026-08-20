@@ -1,8 +1,8 @@
 # tsukuru 作る（つくる）
 
-Tsukuru is a vocabulary and concept randomizer application for reviewing to aid in N5 and N4 JLPT review.
+Tsukuru is a vocabulary and concept randomizer application to aid in N5 and N4 JLPT review.
 
-🏗️ The project is currently under construction. It is planned to have 3 components that coordinate as a fullstack project:
+🏗️ This project is currently under construction. It is planned to have 3 components that coordinate as a full-stack project:
 
 - **Tsukuru** (monorepo) ![Mono repo version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fpackage.json&query=version&label=main)
 - **Kezuru** (data sourcing) ![Kezuru main-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=main-branch) ![Kezuru kezuru-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fkezuru%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=kezuru-branch&color=pink)
@@ -19,8 +19,8 @@ Tsukuru is a vocabulary and concept randomizer application for reviewing to aid 
 
 ### Reason for sourcing from Wikibooks
 
-- The other resources I found previously that were specific to N5/N4 were mostly publications or materials with restrictive licensing. The [Wikibooks JLPT content](https://en.wikibooks.org/wiki/JLPT_Guide), on the otherhand is freely availalbe under the [Create Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/).
-- I considered using [Jitendex](https://jitendex.org/pages/legal.html), the primary dictionary I use with the [Yomitan](https://github.com/yomidevs/yomitan) project, because it is also under [Create Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/). However, I was more interested in an N5/N4 subset that also includes language concepts, which Wikibooks had. The Wikibooks resource also lends itself more readily for instructional material use. Jitendex will instead be used to supplement missing information.
+- The other resources I found previously were mostly publications or materials with restrictive licensing. The [Wikibooks JLPT content](https://en.wikibooks.org/wiki/JLPT_Guide), on the other hand, is freely available under the [Creative Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/) as well as having dedicated sections for specific JLPT N-levels.
+- I considered using [Jitendex](https://jitendex.org/pages/legal.html), the primary dictionary I use with the [Yomitan](https://github.com/yomidevs/yomitan) project, because it is also under the [Creative Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/). However, I was more interested in an N5/N4 subset that also includes language concepts, which Wikibooks had. The Wikibooks resource also lends itself more readily to instructional material use. Jitendex will instead be used to supplement missing information.
 
 ## Quick Start
 
