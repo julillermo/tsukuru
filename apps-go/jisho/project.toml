@@ -1,8 +1,8 @@
 # Go projects use git tags as the source of truth for versioning
-# This is .toml file is primarily for Shields.io to reflect verioning
+# This .toml file is primarily for Shields.io to reflect versioning
 #   in the main-branch README.md
 [project]
 name = "jisho"
-version = "0.0.0"
+version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

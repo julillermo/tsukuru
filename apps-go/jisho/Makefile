@@ -1,18 +1,9 @@
-main_package = ./
+main_package_dir = ./cmd
 build_dir = ./bin
+env_file = ../../.env
+
 sql_engine = postgres
-
-.PHONY: build
-build:
-	@mkdir -p ${build_dir}
-	go build -o ${build_dir}/app ${main_package}
-
-.PHONY: run
-run:
-	${build_dir}/app
-
-.PHONY: dev
-dev: build run
+sql_migrations_dir = ./sql/migrations
 
 .PHONY: clean
 clean: confirm
@@ -23,12 +14,44 @@ clean: confirm
 confirm:
 	@echo -n "Are you sure? [y/N]: " && read ans && [ $${ans:-N} = y ]
 
+
+# ===== CMD: Importer =====
+.PHONY: build-importer
+build-importer:
+	@mkdir -p ${build_dir}/importer
+	go build -o ${build_dir}/importer/app ${main_package_dir}/importer
+
+.PHONY: run-importer
+run-importer:
+	${build_dir}/importer/app
+
+.PHONY: dev-importer
+dev-importer: build-importer
+	${build_dir}/importer/app
+
+
+# ===== CMD: Server =====
+.PHONY: build-server
+build-server:
+	@mkdir -p ${build_dir}/server
+	go build -o ${build_dir}/server/app ${main_package_dir}/server
+
+.PHONY: run-server
+run-server:
+	${build_dir}/server/app
+
+.PHONY: dev-server
+dev-server: build-server
+	${build_dir}/server/app
+
+
+# ===== SQL Goose =====
 .PHONY: up
 up:
-	@set -a; . ./.env; set +a; \
-	goose -dir ./sql/schema ${sql_engine} "$$DB_URL" up
+	@set -a; . ${env_file}; set +a; \
+	goose -dir ${sql_migrations_dir} ${sql_engine} "$$DB_URL" up
 
 .PHONY: down
 down:
-	@set -a; . ./.env; set +a; \
-	goose -dir ./sql/schema ${sql_engine} "$$DB_URL" down
+	@set -a; . ${env_file}; set +a; \
+	goose -dir ${sql_migrations_dir} ${sql_engine} "$$DB_URL" down
