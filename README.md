@@ -6,12 +6,14 @@ Tsukuru is a vocabulary and concept randomizer application for reviewing to aid 
 
 - **Tsukuru** (monorepo) ![Mono repo version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fpackage.json&query=version&label=main)
 - **Kezuru** (data sourcing) ![Kezuru main-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=main-branch) ![Kezuru kezuru-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fkezuru%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=kezuru-branch&color=pink)
+  - [Kezuru data repo](https://github.com/julillermo/kezuru-jlpt-data)
+
 - **Jisho** (backend server) ![Jisho status](https://img.shields.io/badge/status-planned-yellow)
 - **Kami** (frontend) ![Kami status](https://img.shields.io/badge/status-planned-yellow)
 
 ## Motivation
 
-- I couldn't find an application specific to the way I want to review Japanese sentence construction, so I made one instead. There is typically a long waiting leading up to the JLPT exam, and I anticipated difficulty in sustaining Japanese concepts throughout this time. I figured that randomized self-study would be a good approach based on "interleaving". I was hoping to find a dedicated application with a targetted set of words, kanji, and concepts for my N5/N4 level, but such didn't appear to exist.
+- I couldn't find an application specific to the way I want to review Japanese sentence construction, so I made one instead. There is typically a long waiting period leading up to the JLPT exam, and I anticipated difficulty in sustaining Japanese concepts throughout this time. I figured that randomized self-study would be a good approach based on the "interleaving" learning strategy. I was hoping to find a dedicated application with a targetted set of words, kanji, and concepts for my N5/N4 level, but such didn't appear to exist.
 
 <!--Likely move to a more specific location instead of the README later on-->
 
