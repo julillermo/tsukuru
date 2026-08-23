@@ -6,10 +6,7 @@ from utils.types import JLPTLevelType
 def main():
     # ! As of checking on 17 Aug 2026,
     #   only n5 and n4 can be properly scraped for vocab, kanji, and grammar
-    #
-    # These already cover 1200+ scraped words
-    #   n5 ~ 650 words
-    #   n4 ~ 630 words
+    # These already cover 1200+ scraped words; n5 (~ 650 words), n4 (~ 630 words)
     # And ~ 90-100 grammar concepts
     jlpt_levels: list[JLPTLevelType] = [
         "n5",
@@ -19,11 +16,12 @@ def main():
         # "n1", # missing / empty / malformed wiki page
     ]
 
-    scrape_vocab(levels=jlpt_levels, delay_seconds=5)
-    scrape_grammar(levels=jlpt_levels, delay_seconds=5)
+    scrape_vocab(levels=jlpt_levels, delay_seconds=1)
+    scrape_grammar(levels=jlpt_levels, delay_seconds=1)
 
     # TODO CONTINUATION IDEAS:
-    # - Continue to scrape N5 & N4 Grammar
+    # - Continue to scrape N5 & N4 Kanji
+    # - Add unit test to test against a known value
     # - Use an API (if available) to check whether the page has been updated
     #       before fetching. If not updated, use the cached html instead.
     # - Have a separate dedicated CLI for check for updates.

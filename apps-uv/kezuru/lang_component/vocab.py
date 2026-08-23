@@ -17,8 +17,14 @@ from utils.constants import (
     WIKI_BOOKS_ROOT_URL,
     WIKI_JLPT_LEVEL_RESOUCE_LINK,
 )
-from utils.file import get_path_of_latest_file, save_text_to_file
-from utils.soup import filter_from_page_element_list
+from utils.file import (
+    get_path_of_latest_file,
+    save_text_to_file,
+)
+from utils.soup import (
+    filter_from_page_element_list,
+    filter_navigablestring_from_element_list,
+)
 from utils.type_guard import isCJKMiscGroup, isNull
 from utils.types import (
     CJKGyouGroupType,
@@ -28,8 +34,6 @@ from utils.types import (
     VocabEntryType,
 )
 from utils.vocab import extract_english_word_classes
-
-# TODO: This OUTPUT_PATHS is unused. Incorporate it
 
 
 def scrape_vocab(
@@ -74,7 +78,7 @@ def scrape_vocab(
             save_text_to_file(
                 dir=Path(CACHE_DIRS[level]["vocab"]["root"]),
                 filename=f"{level}-root-vocab-page-{current_time_string}-utc.html",
-                contents=str(vocab_soup.prettify()),
+                contents=vocab_soup.prettify(),
             )
 
         wiki_content = vocab_soup.find("div", class_="mw-content-ltr")
@@ -202,7 +206,7 @@ def scrape_gyou_groups(
                 }
 
                 for col_idx, col_data in enumerate(
-                    filter_from_page_element_list(table_row.contents, "\n")
+                    filter_navigablestring_from_element_list(table_row.contents)
                 ):
                     """
                     col_idx 0 -> Wikipedia word index
