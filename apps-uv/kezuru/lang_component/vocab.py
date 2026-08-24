@@ -22,7 +22,6 @@ from utils.file import (
     save_text_to_file,
 )
 from utils.soup import (
-    filter_from_page_element_list,
     filter_navigablestring_from_element_list,
 )
 from utils.type_guard import isCJKMiscGroup, isNull
@@ -91,8 +90,8 @@ def scrape_vocab(
             # TODO: address unhandled error
             raise ValueError("Error: Could not find gyou element in the page.")
 
-        gyou_list = filter_from_page_element_list(
-            list_var=gyou_ul_element.contents, pattern="\n"
+        gyou_list = filter_navigablestring_from_element_list(
+            list_var=gyou_ul_element.contents,
         )
 
         # The following doesn't pick up words classified under "/misc" or "misc"
