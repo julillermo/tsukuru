@@ -16,8 +16,8 @@ def main():
         # "n1", # missing / empty / malformed wiki page
     ]
 
-    scrape_vocab(levels=jlpt_levels, delay_seconds=1)
-    scrape_grammar(levels=jlpt_levels, delay_seconds=1)
+    scrape_vocab(levels=jlpt_levels, delay_seconds=5)
+    scrape_grammar(levels=jlpt_levels, delay_seconds=5)
 
     # TODO CONTINUATION IDEAS:
     # - Continue to scrape N5 & N4 Kanji
