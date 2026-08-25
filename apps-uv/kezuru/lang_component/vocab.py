@@ -228,8 +228,8 @@ def scrape_gyou_groups(
                     continue
 
                 vocab_temp: VocabEntryType = {
-                    "wikipediaIndex": None,
-                    "kana": "",
+                    "wiki_index": None,
+                    "kana_writing": "",
                     "kanji": None,
                     "classification": [],
                     "definition": "",
@@ -255,7 +255,7 @@ def scrape_gyou_groups(
                                 rprint(
                                     f"Scraping word: {level.capitalize()}#{number_value}"
                                 )  # TODO: make this optional with a `verbose` flag/argument
-                                vocab_temp["wikipediaIndex"] = number_value
+                                vocab_temp["wiki_index"] = number_value
                             except ValueError as err:
                                 warnings.warn(
                                     f"Invalid int() conversion error for Wikipedia {level.capitalize()!r} word index '{col_data_tag.string}': {err}"
@@ -268,10 +268,10 @@ def scrape_gyou_groups(
                         if not isNull(col_data_tag.a) and not isNull(
                             col_data_tag.a.string
                         ):
-                            vocab_temp["kana"] = col_data_tag.a.string.strip()
+                            vocab_temp["kana_writing"] = col_data_tag.a.string.strip()
                             continue
                         if not isNull(col_data_tag.string):
-                            vocab_temp["kana"] = col_data_tag.string.replace(
+                            vocab_temp["kana_writing"] = col_data_tag.string.replace(
                                 "\n", ""
                             ).strip()
                             continue

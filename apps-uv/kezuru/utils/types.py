@@ -77,8 +77,8 @@ EnglishWordClassType = Literal[
 
 
 class VocabEntryType(TypedDict):
-    wikipediaIndex: int | None
-    kana: str
+    wiki_index: int | None
+    kana_writing: str
     kanji: str | None
     classification: list[EnglishWordClassType]
     definition: str
