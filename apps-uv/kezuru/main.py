@@ -16,7 +16,7 @@ def main():
         # "n1", # missing / empty / malformed wiki page
     ]
 
-    scrape_vocab(levels=jlpt_levels, delay_seconds=5)
+    scrape_vocab(levels=jlpt_levels, delay_seconds=5, saving_strategy="combined")
     scrape_grammar(levels=jlpt_levels, delay_seconds=5)
 
     # TODO CONTINUATION IDEAS:
