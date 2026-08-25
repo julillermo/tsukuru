@@ -3,7 +3,7 @@ import time
 import warnings
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import cast
+from typing import Literal, cast
 
 import requests
 from bs4 import BeautifulSoup as bSoup
@@ -38,6 +38,7 @@ from utils.vocab import extract_english_word_classes
 def scrape_vocab(
     levels: list[JLPTLevelType],
     delay_seconds: int | None = 5,
+    saving_strategy: Literal["combined", "individual"] = "combined",
 ) -> None:
     """
     Scrape specified Wikipedia JLPT Guide Vocab by level.
@@ -118,13 +119,43 @@ def scrape_vocab(
                 contents=json.dumps(obj=gyou_links_dict, ensure_ascii=False),
             )
 
+        combined_word_list: list[VocabEntryType] = []
         for cjk_gyou in gyou_links_dict:
-            scrape_gyou_groups(
+            romanji_gyou = CJK_GYOU_DICT[cjk_gyou]
+            gyou_word_list = scrape_gyou_groups(
                 level=level,
                 romanji_gyou=CJK_GYOU_DICT[cjk_gyou],
                 delay_seconds=delay_seconds,
                 # link=gyou_links_dict[cjk_gyou] # The JLPT links to wrong pages
             )
+
+            if saving_strategy == "individual":
+                save_text_to_file(
+                    dir=Path(OUTPUT_DIR),
+                    filename=f"vocab_{level}_{romanji_gyou}.json",
+                    contents=json.dumps(obj=gyou_word_list, ensure_ascii=False),
+                )
+            elif saving_strategy == "combined":
+                combined_word_list.extend(gyou_word_list)
+
+        if saving_strategy == "combined":
+            save_text_to_file(
+                dir=Path(OUTPUT_DIR),
+                filename=f"vocab_{level}_combined.json",
+                contents=json.dumps(obj=combined_word_list, ensure_ascii=False),
+            )
+
+
+# ? JULIUS: Was last here.
+# I was contemplating on moving out the saving logic out from this function and into its parent
+# This should allow me to use a condition on whether to compact and save as a single file.
+# Perhaps, it could be a dedicated function
+
+# save_text_to_file(
+#     dir=Path(OUTPUT_DIR),
+#     filename=f"vocab_{level}_{romanji_gyou}.json",
+#     contents=json.dumps(obj=word_list, ensure_ascii=False),
+# )
 
 
 def scrape_gyou_groups(
@@ -132,7 +163,7 @@ def scrape_gyou_groups(
     romanji_gyou: RomanjiGyouGroupType,
     delay_seconds: int | None = 5,
     link: str | None = None,
-):
+) -> list[VocabEntryType]:
     # TODO: Add function description for intellisense
     # TODO: Currently a costant. Make this as input comming from scrape_vocab() outout
     cached_page = get_path_of_latest_file(CACHE_DIRS[level]["vocab"][romanji_gyou])
@@ -179,7 +210,7 @@ def scrape_gyou_groups(
         raise ValueError("Error: Could not find wiki content in the page.")
 
     dan_group_list = wiki_content.find_all("div", class_="mw-heading2")
-    word_list: list[VocabEntryType] = []
+    gyou_word_list: list[VocabEntryType] = []
 
     for dan_element in dan_group_list:
         table_sibling = dan_element.find_next_sibling(name="table")
@@ -273,10 +304,6 @@ def scrape_gyou_groups(
                                 "\n", ""
                             ).strip()
 
-                word_list.append(vocab_temp)
+                gyou_word_list.append(vocab_temp)
 
-    save_text_to_file(
-        dir=Path(OUTPUT_DIR),
-        filename=f"vocab_{level}_{romanji_gyou}.json",
-        contents=json.dumps(obj=word_list, ensure_ascii=False),
-    )
+    return gyou_word_list
