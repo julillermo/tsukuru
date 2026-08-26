@@ -5,32 +5,33 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 	"github.com/julillermo/tsukuru/apps-go/jisho/cmd/server/api"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
+	"github.com/julillermo/tsukuru/apps-go/jisho/internal/utils"
+
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	if err := godotenv.Load("../../.env"); err != nil {
+	repoRoot := os.Getenv("REPO_ROOT")
+	if err := godotenv.Load(filepath.Join(repoRoot, "/.env")); err != nil {
 		log.Printf("warning: could not load .env: %v", err)
 	}
+
 	dbURL := os.Getenv("DB_URL")
 
-	db, psqlConnErr := sql.Open("postgres", dbURL)
-	if psqlConnErr != nil {
-		log.Printf("Error marshalling JSON: %s", psqlConnErr)
-		os.Exit(1)
+	dbConn, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		log.Println("Error connecting to postgres")
+		log.Fatal(err)
 	}
-	defer func() {
-		if err := db.Close(); err != nil {
-			log.Printf("error closing database: %v", err)
-		}
-	}()
+	defer utils.CloseDB(dbConn)
 
-	dbQueries := database.New(db)
+	dbQueries := database.New(dbConn)
 	serveMux := http.NewServeMux()
 	jishoServer := &http.Server{
 		Addr:    ":8081",
@@ -48,3 +49,5 @@ func main() {
 // TODO CONTINUATION:
 // - Learn how to setup go as a monorepo
 // - Apply basic protection to select routes (in the future)
+// - Add a condition where if no postgresql server was provided,
+// 		trigger the kezuru scrape and load everything in memory.

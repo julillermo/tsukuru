@@ -1,6 +1,6 @@
 -- name: CreateVocabulary :one
 INSERT INTO vocabularies
-    (id, created_at, updated_at, wiki_index, kana, kanji, classification, definition)
+    (id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition)
 VALUES(
     gen_random_uuid(),
     NOW(),
@@ -9,7 +9,8 @@ VALUES(
     $2,
     $3,
     $4,
-    $5
+    $5,
+    $6
 )
 RETURNING *;
 

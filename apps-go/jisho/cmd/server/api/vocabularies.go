@@ -33,6 +33,9 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 		}
 
 		vocabRes, err := api.DBQueries.CreateVocabulary(request.Context(), db.CreateVocabularyParams{
+			JlptLevel: db.NullJlptLevelEnum{
+				JlptLevelEnum: db.JlptLevelEnum(reqJSON.JLPTLevel),
+				Valid:         utils.IsJLPTLevel(reqJSON.JLPTLevel)},
 			WikiIndex: sql.NullInt32{
 				Int32: int32(reqJSON.WikiIndex),
 				Valid: reqJSON.WikiIndex > 0,
@@ -62,6 +65,7 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 				UpdatedAt: vocabRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			VocabularyDbEntry: apiType.VocabularyDbEntry{
+				JLPTLevel:      types.JLPTLevel(vocabRes.JlptLevel.JlptLevelEnum),
 				WikiIndex:      int(vocabRes.WikiIndex.Int32),
 				Kana:           vocabRes.Kana.String,
 				Kanji:          vocabRes.Kana.String,
