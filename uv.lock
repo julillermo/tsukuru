@@ -99,7 +99,7 @@ wheels = [
 
 [[package]]
 name = "kezuru"
-version = "1.2.0"
+version = "1.2.2"
 source = { editable = "apps-uv/kezuru" }
 dependencies = [
     { name = "beautifulsoup4" },

@@ -146,18 +146,6 @@ def scrape_vocab(
             )
 
 
-# ? JULIUS: Was last here.
-# I was contemplating on moving out the saving logic out from this function and into its parent
-# This should allow me to use a condition on whether to compact and save as a single file.
-# Perhaps, it could be a dedicated function
-
-# save_text_to_file(
-#     dir=Path(OUTPUT_DIR),
-#     filename=f"vocab_{level}_{romanji_gyou}.json",
-#     contents=json.dumps(obj=word_list, ensure_ascii=False),
-# )
-
-
 def scrape_gyou_groups(
     level: JLPTLevelType,
     romanji_gyou: RomanjiGyouGroupType,
@@ -234,6 +222,7 @@ def scrape_gyou_groups(
                     "classification": [],
                     "definition": "",
                 }
+                is_column_error: bool = False
 
                 for col_idx, col_data in enumerate(
                     filter_navigablestring_from_element_list(table_row.contents)
@@ -250,6 +239,7 @@ def scrape_gyou_groups(
                     if col_idx == 0:
                         if not isNull(col_data_tag.string):
                             # TODO: improve int conversion. Works for now, but not general enough to work in other cases
+                            print(f"col_data_tag.string: {col_data_tag.string!r}")
                             try:
                                 number_value = int(col_data_tag.string)
                                 rprint(
@@ -261,8 +251,10 @@ def scrape_gyou_groups(
                                     f"Invalid int() conversion error for Wikipedia {level.capitalize()!r} word index '{col_data_tag.string}': {err}"
                                 )
                                 rprint(
-                                    f"[yellow]Ignored invalid Wikipedia {level.capitalize()} word index '{col_data_tag.string}'. Proceeding ...[/yellow]"
+                                    f"[yellow]Ignored invalid entire row of Wikipedia {level.capitalize()} word index '{col_data_tag.string}'. Proceeding ...[/yellow]"
                                 )
+                                is_column_error = True
+                                continue
                     # Kana writing
                     elif col_idx == 1:
                         if not isNull(col_data_tag.a) and not isNull(
@@ -304,6 +296,10 @@ def scrape_gyou_groups(
                                 "\n", ""
                             ).strip()
 
-                gyou_word_list.append(vocab_temp)
+                if is_column_error:
+                    continue
+                else:
+                    gyou_word_list.append(vocab_temp)
+                is_column_error = False
 
     return gyou_word_list
