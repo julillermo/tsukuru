@@ -6,9 +6,56 @@ package database
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"fmt"
 
 	"github.com/google/uuid"
 )
+
+type JlptLevelEnum string
+
+const (
+	JlptLevelEnumN5 JlptLevelEnum = "n5"
+	JlptLevelEnumN4 JlptLevelEnum = "n4"
+	JlptLevelEnumN3 JlptLevelEnum = "n3"
+	JlptLevelEnumN2 JlptLevelEnum = "n2"
+	JlptLevelEnumN1 JlptLevelEnum = "n1"
+)
+
+func (e *JlptLevelEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = JlptLevelEnum(s)
+	case string:
+		*e = JlptLevelEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for JlptLevelEnum: %T", src)
+	}
+	return nil
+}
+
+type NullJlptLevelEnum struct {
+	JlptLevelEnum JlptLevelEnum
+	Valid         bool // Valid is true if JlptLevelEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullJlptLevelEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.JlptLevelEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.JlptLevelEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullJlptLevelEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.JlptLevelEnum), nil
+}
 
 type ExampleSentence struct {
 	ID               uuid.UUID
@@ -31,6 +78,7 @@ type Vocabulary struct {
 	ID             uuid.UUID
 	CreatedAt      sql.NullTime
 	UpdatedAt      sql.NullTime
+	JlptLevel      NullJlptLevelEnum
 	WikiIndex      sql.NullInt32
 	Kana           sql.NullString
 	Kanji          sql.NullString

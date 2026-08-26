@@ -1,12 +1,23 @@
 package utils
 
-// Taken from boot.dev JSON article (this is a very good resource)
-// https://www.boot.dev/blog/golang/json-golang
-
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 )
+
+func SaveJSONToFile(payload interface{}, path string) {
+	// Use json.Marshal() to convert to []bytes with JSON considerations
+	payloadByte, err := json.Marshal(payload)
+	if err != nil {
+		log.Printf("Error marshalling JSON: %s", err)
+	}
+	os.WriteFile(path, payloadByte, 0644)
+
+	fmt.Printf("Successfully saved JSON as %s\n", path)
+}
 
 func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) error {
 	response, err := json.Marshal(payload)

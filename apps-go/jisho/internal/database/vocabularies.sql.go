@@ -15,7 +15,7 @@ import (
 
 const createVocabulary = `-- name: CreateVocabulary :one
 INSERT INTO vocabularies
-    (id, created_at, updated_at, wiki_index, kana, kanji, classification, definition)
+    (id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition)
 VALUES(
     gen_random_uuid(),
     NOW(),
@@ -24,12 +24,14 @@ VALUES(
     $2,
     $3,
     $4,
-    $5
+    $5,
+    $6
 )
-RETURNING id, created_at, updated_at, wiki_index, kana, kanji, classification, definition
+RETURNING id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition
 `
 
 type CreateVocabularyParams struct {
+	JlptLevel      NullJlptLevelEnum
 	WikiIndex      sql.NullInt32
 	Kana           sql.NullString
 	Kanji          sql.NullString
@@ -39,6 +41,7 @@ type CreateVocabularyParams struct {
 
 func (q *Queries) CreateVocabulary(ctx context.Context, arg CreateVocabularyParams) (Vocabulary, error) {
 	row := q.db.QueryRowContext(ctx, createVocabulary,
+		arg.JlptLevel,
 		arg.WikiIndex,
 		arg.Kana,
 		arg.Kanji,
@@ -50,6 +53,7 @@ func (q *Queries) CreateVocabulary(ctx context.Context, arg CreateVocabularyPara
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.JlptLevel,
 		&i.WikiIndex,
 		&i.Kana,
 		&i.Kanji,
@@ -60,7 +64,7 @@ func (q *Queries) CreateVocabulary(ctx context.Context, arg CreateVocabularyPara
 }
 
 const getVocabularyById = `-- name: GetVocabularyById :one
-SELECT id, created_at, updated_at, wiki_index, kana, kanji, classification, definition FROM vocabularies WHERE id=$1
+SELECT id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition FROM vocabularies WHERE id=$1
 `
 
 func (q *Queries) GetVocabularyById(ctx context.Context, id uuid.UUID) (Vocabulary, error) {
@@ -70,6 +74,7 @@ func (q *Queries) GetVocabularyById(ctx context.Context, id uuid.UUID) (Vocabula
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.JlptLevel,
 		&i.WikiIndex,
 		&i.Kana,
 		&i.Kanji,
@@ -90,7 +95,7 @@ SET
     definition = COALESCE($5, definition)
 WHERE
     id=$6
-RETURNING id, created_at, updated_at, wiki_index, kana, kanji, classification, definition
+RETURNING id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition
 `
 
 type UpdateVocabularyByIdParams struct {
@@ -116,6 +121,7 @@ func (q *Queries) UpdateVocabularyById(ctx context.Context, arg UpdateVocabulary
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.JlptLevel,
 		&i.WikiIndex,
 		&i.Kana,
 		&i.Kanji,

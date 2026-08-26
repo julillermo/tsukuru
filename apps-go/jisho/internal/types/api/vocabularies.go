@@ -1,5 +1,9 @@
 package api
 
+import (
+	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
+)
+
 type CommonVocabularyDbEntryDetails struct {
 	Id        string `json:"id"`
 	CreatedAt string `json:"created_at"`
@@ -7,14 +11,16 @@ type CommonVocabularyDbEntryDetails struct {
 }
 
 type VocabularyDbEntry struct {
-	WikiIndex      int      `json:"wiki_index" validate:"required"`
-	Kana           string   `json:"kana_writing" validate:"required"`
-	Kanji          string   `json:"kanji" validate:"required"`
-	Classification []string `json:"classification" validate:"required"`
-	Definition     string   `json:"definition" validate:"required"`
+	JLPTLevel      types.JLPTLevel `json:"jlpt_level" validate:"required"`
+	WikiIndex      int             `json:"wiki_index" validate:"required"`
+	Kana           string          `json:"kana_writing" validate:"required"`
+	Kanji          string          `json:"kanji" validate:"required"`
+	Classification []string        `json:"classification" validate:"required"`
+	Definition     string          `json:"definition" validate:"required"`
 }
 
 type VocabularyDbEntryUpdate struct {
+	JLPTLevel      *string   `json:"jlpt_level"`
 	WikiIndex      *int      `json:"wiki_index"`
 	Kana           *string   `json:"kana_writing"`
 	Kanji          *string   `json:"kanji"`
