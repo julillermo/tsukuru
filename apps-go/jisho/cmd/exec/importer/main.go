@@ -55,7 +55,7 @@ func main() {
 		ctx,
 		jishoAPI,
 	)
-	fmt.Printf("Successfully inserted %d words to the 'vocabluaries' table\n", insertCount)
+	fmt.Printf("Successfully inserted %d words into the 'vocabluaries' table\n", insertCount)
 }
 
 // TODO Continuation:

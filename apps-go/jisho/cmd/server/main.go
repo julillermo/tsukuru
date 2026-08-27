@@ -40,8 +40,9 @@ func main() {
 
 	jishoAPI := types.NewAPIConfig(dbQueries)
 
-	api.HealthAPI(serveMux, jishoAPI)       // /api/kenko
-	api.VocabulariesAPI(serveMux, jishoAPI) // /api/vocabularies
+	api.HealthAPI(serveMux, jishoAPI)          // /api/kenko
+	api.VocabulariesAPI(serveMux, jishoAPI)    // /api/vocabularies
+	api.GrammarConceptsAPI(serveMux, jishoAPI) // /api/grammar_concepts
 
 	log.Fatal(jishoServer.ListenAndServe())
 }
@@ -51,3 +52,4 @@ func main() {
 // - Apply basic protection to select routes (in the future)
 // - Add a condition where if no postgresql server was provided,
 // 		trigger the kezuru scrape and load everything in memory.
+// - Weigh in on whether the repeated API code should be generalized

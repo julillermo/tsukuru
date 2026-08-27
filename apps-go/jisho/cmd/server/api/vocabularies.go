@@ -30,6 +30,7 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 		reqJSON := apiType.ReqCreateVocabulary{}
 		if err := decoder.Decode(&reqJSON); err != nil {
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to decode request json")
+			return
 		}
 
 		vocabRes, err := api.DBQueries.CreateVocabulary(request.Context(), db.CreateVocabularyParams{
@@ -56,6 +57,7 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 		})
 		if err != nil {
 			_ = utils.RespondWithError(writer, http.StatusInternalServerError, "failure to create vocabulary entry")
+			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResCreateVocabulary{
@@ -80,18 +82,21 @@ func GetVocabularyByID(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /api/vocabularies/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		vocabId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
-			_ = utils.RespondWithError(writer, http.StatusBadRequest, "invalid vocabulary UUID")
+			_ = utils.RespondWithError(writer, http.StatusBadRequest, "malformed vocabulary UUID")
 			return
 		}
 
 		vocabRes, err := api.DBQueries.GetVocabularyById(request.Context(), vocabId)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				_ = utils.RespondWithError(writer, http.StatusNotFound, "vocabulary not found")
-				return
+				_ = utils.RespondWithError(writer, http.StatusNotFound,
+					fmt.Sprintf("vocabulary with id %s not found", vocabId),
+				)
 			}
-			_ = utils.RespondWithError(writer, http.StatusInternalServerError, "could not get vocabulary")
-
+			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
+				fmt.Sprintf("could not get vocabulary: %s", vocabId),
+			)
+			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResGetVocabularyById{
@@ -115,40 +120,42 @@ func UpdateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("PATCH /api/vocabularies/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		vocabId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
-			_ = utils.RespondWithError(writer, http.StatusBadRequest, "invalid vocabulary UUID")
+			_ = utils.RespondWithError(writer, http.StatusBadRequest, "malformed vocabulary UUID")
 			return
 		}
 
 		decoder := json.NewDecoder(request.Body)
 		defer request.Body.Close()
 
-		reqJSON := apiType.ReqCreateVocabulary{}
+		reqJSON := apiType.ReqUpdateVocabularyById{}
 		if err := decoder.Decode(&reqJSON); err != nil {
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to decode request json")
+			return
 		}
 
 		vocabRes, err := api.DBQueries.UpdateVocabularyById(request.Context(), db.UpdateVocabularyByIdParams{
 			ID: vocabId,
 			WikiIndex: sql.NullInt32{
-				Int32: int32(reqJSON.WikiIndex),
-				Valid: reqJSON.WikiIndex > 0,
+				Int32: utils.GetOptInt32Input(reqJSON.WikiIndex),
+				Valid: utils.ValidateOptInt32Input(reqJSON.WikiIndex),
 			},
 			Kana: sql.NullString{
-				String: reqJSON.Kana,
-				Valid:  len(reqJSON.Kana) > 0,
+				String: utils.GetOptStringInput(reqJSON.Kana),
+				Valid:  utils.ValidateOptStringInput(reqJSON.Kana),
 			},
 			Kanji: sql.NullString{
-				String: reqJSON.Kanji,
-				Valid:  len(reqJSON.Kanji) > 0,
+				String: utils.GetOptStringInput(reqJSON.Kanji),
+				Valid:  utils.ValidateOptStringInput(reqJSON.Kanji),
 			},
-			Classification: reqJSON.Classification,
+			Classification: utils.GetOptSliceInput(reqJSON.Classification),
 			Definition: sql.NullString{
-				String: reqJSON.Definition,
-				Valid:  len(reqJSON.Definition) > 0,
+				String: utils.GetOptStringInput(reqJSON.Definition),
+				Valid:  utils.ValidateOptStringInput(reqJSON.Definition),
 			},
 		})
 		if err != nil {
-			_ = utils.RespondWithError(writer, http.StatusInternalServerError, fmt.Sprintf("failure to update vocabulary entry %v", vocabId))
+			_ = utils.RespondWithError(writer, http.StatusInternalServerError, fmt.Sprintf("failure to update vocabularies entry %v", vocabId))
+			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResUpdateVocabularyById{
@@ -160,7 +167,7 @@ func UpdateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
 			VocabularyDbEntry: apiType.VocabularyDbEntry{
 				WikiIndex:      int(vocabRes.WikiIndex.Int32),
 				Kana:           vocabRes.Kana.String,
-				Kanji:          vocabRes.Kana.String,
+				Kanji:          vocabRes.Kanji.String,
 				Classification: vocabRes.Classification,
 				Definition:     vocabRes.Definition.String,
 			},
