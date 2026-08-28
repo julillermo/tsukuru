@@ -97,10 +97,11 @@ func GetVocabularyByID(serveMux *http.ServeMux, api *types.APIConfig) {
 				_ = utils.RespondWithError(writer, http.StatusNotFound,
 					fmt.Sprintf("vocabulary with id %s not found", vocabId),
 				)
+			} else {
+				_ = utils.RespondWithError(writer, http.StatusInternalServerError,
+					fmt.Sprintf("could not retrieve vocabulary: %s", vocabId),
+				)
 			}
-			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
-				fmt.Sprintf("could not retrieve vocabulary: %s", vocabId),
-			)
 			return
 		}
 

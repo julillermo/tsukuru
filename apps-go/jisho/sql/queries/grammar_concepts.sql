@@ -11,8 +11,10 @@ VALUES(
 )
 RETURNING *;
 
+
 -- name: GetGrammarConceptById :one
 SELECT * FROM grammar_concepts WHERE id=$1;
+
 
 -- name: UpdateGrammarConceptById :one
 UPDATE grammar_concepts

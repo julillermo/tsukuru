@@ -88,10 +88,11 @@ func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 				_ = utils.RespondWithError(writer, http.StatusNotFound,
 					fmt.Sprintf("grammar_concept with id %s not found", conceptId),
 				)
+			} else {
+				_ = utils.RespondWithError(writer, http.StatusInternalServerError,
+					fmt.Sprintf("could not retrieve grammar_concept: %s", conceptId),
+				)
 			}
-			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
-				fmt.Sprintf("could not retrieve grammar_concept: %s", conceptId),
-			)
 			return
 		}
 

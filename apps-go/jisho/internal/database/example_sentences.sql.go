@@ -140,3 +140,41 @@ func (q *Queries) GetExampleSentencesByGrammarConceptId(ctx context.Context, gra
 	}
 	return items, nil
 }
+
+const updateExampleSentenceById = `-- name: UpdateExampleSentenceById :one
+UPDATE example_sentences
+SET
+    updated_at = NOW(),
+    japanese_text = COALESCE($1, japanese_text),
+    english_meaning = COALESCE($2, english_meaning),
+    grammar_concept_id = COALESCE($3, grammar_concept_id)
+WHERE
+    id=$4
+RETURNING id, created_at, updated_at, japanese_text, english_meaning, grammar_concept_id
+`
+
+type UpdateExampleSentenceByIdParams struct {
+	JapaneseText     sql.NullString
+	EnglishMeaning   sql.NullString
+	GrammarConceptID uuid.NullUUID
+	ID               uuid.UUID
+}
+
+func (q *Queries) UpdateExampleSentenceById(ctx context.Context, arg UpdateExampleSentenceByIdParams) (ExampleSentence, error) {
+	row := q.db.QueryRowContext(ctx, updateExampleSentenceById,
+		arg.JapaneseText,
+		arg.EnglishMeaning,
+		arg.GrammarConceptID,
+		arg.ID,
+	)
+	var i ExampleSentence
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.JapaneseText,
+		&i.EnglishMeaning,
+		&i.GrammarConceptID,
+	)
+	return i, err
+}

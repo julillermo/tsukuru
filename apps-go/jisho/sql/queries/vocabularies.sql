@@ -18,6 +18,7 @@ RETURNING *;
 -- name: GetVocabularyById :one
 SELECT * FROM vocabularies WHERE id=$1;
 
+
 -- TODO: This is missing JLPT level
 -- name: UpdateVocabularyById :one
 UPDATE vocabularies

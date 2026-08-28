@@ -11,6 +11,7 @@ VALUES(
 )
 RETURNING *;
 
+
 -- name: GetExampleSentenceWithGrammarConcept :one
 SELECT
   es.id,
@@ -31,6 +32,7 @@ JOIN grammar_concepts AS gc
   ON gc.id = es.grammar_concept_id
 WHERE es.id = $1;
 
+
 -- name: GetExampleSentencesByGrammarConceptId :many
 SELECT
     id,
@@ -42,3 +44,15 @@ SELECT
 FROM example_sentences
 WHERE grammar_concept_id = $1
 ORDER BY created_at, id;
+
+
+-- name: UpdateExampleSentenceById :one
+UPDATE example_sentences
+SET
+    updated_at = NOW(),
+    japanese_text = COALESCE(sqlc.narg('japanese_text'), japanese_text),
+    english_meaning = COALESCE(sqlc.narg('english_meaning'), english_meaning),
+    grammar_concept_id = COALESCE(sqlc.narg('grammar_concept_id'), grammar_concept_id)
+WHERE
+    id=sqlc.arg('id')
+RETURNING *;

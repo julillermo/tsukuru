@@ -14,6 +14,7 @@ type GrammarConceptDbEntry struct {
 	Definition string          `json:"definition" validate:"required"`
 }
 
+// TODO: think about whether ID should also be part of the Update struct
 type GrammarConceptDbEntryUpdate struct {
 	JLPTLevel  types.JLPTLevel `json:"jlpt_level"`
 	Concept    *string         `json:"concept"`
