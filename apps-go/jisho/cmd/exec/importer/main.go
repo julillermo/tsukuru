@@ -48,14 +48,26 @@ func main() {
 		filepath.Join(repoRoot, "data"),
 		jlptLevels...,
 	)
-
-	insertCount := langcomponent.CommitVocabulariesToDB(
+	vocabInsertCount := langcomponent.CommitVocabulariesToDB(
 		jlptVocabularies,
 		dbConn,
 		ctx,
 		jishoAPI,
 	)
-	fmt.Printf("Successfully inserted %d words into the 'vocabluaries' table\n", insertCount)
+	fmt.Printf("Successfully inserted %d words into the 'vocabluaries' table\n", vocabInsertCount)
+
+	jlptGrammarConcepts := langcomponent.ReadAndCombineGrammarConcepts(
+		filepath.Join(repoRoot, "data"),
+		jlptLevels...,
+	)
+	conceptInsertCount, sentenceInsertCount := langcomponent.CommitGrammarConceptsToDB(
+		jlptGrammarConcepts,
+		dbConn,
+		ctx,
+		jishoAPI,
+	)
+	fmt.Printf("Successfully inserted %d grammar concepts into the 'grammar_concepts' table\n", conceptInsertCount)
+	fmt.Printf("Successfully inserted %d example sentences into the 'example_sentences' table\n", sentenceInsertCount)
 }
 
 // TODO Continuation:
@@ -66,3 +78,7 @@ func main() {
 // - It might be helpful to add a cascading delete ???
 // - Might want to make use of Golang's way of functions throwing up errors.
 // 	Current setup appears to generally assume the happy path.
+// - There seems to be repeated code between /langcomponent/vocabularies.go and
+// 	/langcomponent/grammar_concepts.go. Consider unifying them.
+// - Perhaps there's a way to parallize insert into Database instead of inserting them
+// 	sequentially.

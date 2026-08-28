@@ -107,6 +107,7 @@ type UpdateVocabularyByIdParams struct {
 	ID             uuid.UUID
 }
 
+// TODO: This is missing JLPT level
 func (q *Queries) UpdateVocabularyById(ctx context.Context, arg UpdateVocabularyByIdParams) (Vocabulary, error) {
 	row := q.db.QueryRowContext(ctx, updateVocabularyById,
 		arg.WikiIndex,

@@ -1,5 +1,10 @@
 package utils
 
+import (
+	db "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
+	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
+)
+
 func GetOptInt32Input(value *int) int32 {
 	if value == nil {
 		return 0
@@ -28,4 +33,20 @@ func GetOptSliceInput[T any](value *[]T) []T {
 	} else {
 		return nil
 	}
+}
+
+func ConvertExampleSetenceDBToApi(
+	exampleSentencesDb []db.ExampleSentence,
+) (exampleSentencesApi []apiType.ExampleSentenceDbEntry) {
+	for idx := range exampleSentencesDb {
+		exampleSentencesApi = append(exampleSentencesApi,
+			apiType.ExampleSentenceDbEntry{
+				Id:               exampleSentencesDb[idx].ID.String(),
+				GrammarConceptId: exampleSentencesDb[idx].GrammarConceptID.UUID.String(),
+				JapaneseText:     exampleSentencesDb[idx].JapaneseText.String,
+				EnglishMeaning:   exampleSentencesDb[idx].EnglishMeaning.String,
+			},
+		)
+	}
+	return exampleSentencesApi
 }

@@ -14,29 +14,32 @@ import (
 
 const createGrammarConcept = `-- name: CreateGrammarConcept :one
 INSERT INTO grammar_concepts
-    (id, created_at, updated_at, concept, definition)
+    (id, created_at, updated_at, jlpt_level, concept, definition)
 VALUES(
     gen_random_uuid(),
     NOW(),
     NOW(),
     $1,
-    $2
+    $2,
+    $3
 )
-RETURNING id, created_at, updated_at, concept, definition
+RETURNING id, created_at, updated_at, jlpt_level, concept, definition
 `
 
 type CreateGrammarConceptParams struct {
+	JlptLevel  NullJlptLevelEnum
 	Concept    sql.NullString
 	Definition sql.NullString
 }
 
 func (q *Queries) CreateGrammarConcept(ctx context.Context, arg CreateGrammarConceptParams) (GrammarConcept, error) {
-	row := q.db.QueryRowContext(ctx, createGrammarConcept, arg.Concept, arg.Definition)
+	row := q.db.QueryRowContext(ctx, createGrammarConcept, arg.JlptLevel, arg.Concept, arg.Definition)
 	var i GrammarConcept
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.JlptLevel,
 		&i.Concept,
 		&i.Definition,
 	)
@@ -44,7 +47,7 @@ func (q *Queries) CreateGrammarConcept(ctx context.Context, arg CreateGrammarCon
 }
 
 const getGrammarConceptById = `-- name: GetGrammarConceptById :one
-SELECT id, created_at, updated_at, concept, definition FROM grammar_concepts WHERE id=$1
+SELECT id, created_at, updated_at, jlpt_level, concept, definition FROM grammar_concepts WHERE id=$1
 `
 
 func (q *Queries) GetGrammarConceptById(ctx context.Context, id uuid.UUID) (GrammarConcept, error) {
@@ -54,6 +57,7 @@ func (q *Queries) GetGrammarConceptById(ctx context.Context, id uuid.UUID) (Gram
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.JlptLevel,
 		&i.Concept,
 		&i.Definition,
 	)
@@ -64,26 +68,34 @@ const updateGrammarConceptById = `-- name: UpdateGrammarConceptById :one
 UPDATE grammar_concepts
 SET
     updated_at = NOW(),
-    concept = COALESCE($1, concept),
-    definition = COALESCE($2, definition)
+    jlpt_level = COALESCE($1, jlpt_level),
+    concept = COALESCE($2, concept),
+    definition = COALESCE($3, definition)
 WHERE
-    id=$3
-RETURNING id, created_at, updated_at, concept, definition
+    id=$4
+RETURNING id, created_at, updated_at, jlpt_level, concept, definition
 `
 
 type UpdateGrammarConceptByIdParams struct {
+	JlptLevel  NullJlptLevelEnum
 	Concept    sql.NullString
 	Definition sql.NullString
 	ID         uuid.UUID
 }
 
 func (q *Queries) UpdateGrammarConceptById(ctx context.Context, arg UpdateGrammarConceptByIdParams) (GrammarConcept, error) {
-	row := q.db.QueryRowContext(ctx, updateGrammarConceptById, arg.Concept, arg.Definition, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateGrammarConceptById,
+		arg.JlptLevel,
+		arg.Concept,
+		arg.Definition,
+		arg.ID,
+	)
 	var i GrammarConcept
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.JlptLevel,
 		&i.Concept,
 		&i.Definition,
 	)

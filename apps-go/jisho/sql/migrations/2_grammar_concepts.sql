@@ -3,6 +3,7 @@ CREATE TABLE grammar_concepts (
   id UUID PRIMARY KEY,
   created_at TIMESTAMP,
   updated_at TIMESTAMP,
+  jlpt_level jlpt_level_enum,
   concept TEXT,
   definition TEXT
 );

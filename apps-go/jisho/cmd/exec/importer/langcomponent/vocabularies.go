@@ -11,8 +11,8 @@ import (
 
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
-	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
 	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
+	importerType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/importer"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/utils"
 )
 
@@ -39,24 +39,41 @@ func ReadAndCombineVocab(
 		}
 
 		// Parse as JSON-struct
-		var vocabularies []apiType.VocabularyDbEntry
+		var vocabularies []importerType.VocabularyJSON
 		if err := json.Unmarshal(data, &vocabularies); err != nil {
 			log.Printf("Error parsing file %s", vocabPath)
 			log.Fatal(err)
 		}
 
-		for idx := range vocabularies {
-			vocabularies[idx].JLPTLevel = level
-		}
-
-		vocabDbEntries = append(vocabDbEntries, vocabularies...)
+		vocabulariesDb := utils.ConvertVocabularyJSONtoDB(vocabularies, level)
+		vocabDbEntries = append(vocabDbEntries, vocabulariesDb...)
 	}
 
-	return
+	return vocabDbEntries
+}
+
+// TODO: Move this to utils
+func ConvertVocabularyJSONtoDB(
+	vocabularies []importerType.VocabularyJSON,
+	level types.JLPTLevel,
+) (
+	vocabulariesDb []apiType.VocabularyDbEntry,
+) {
+	for idx := range vocabularies {
+		vocabulariesDb = append(vocabulariesDb, apiType.VocabularyDbEntry{
+			JLPTLevel:      level,
+			WikiIndex:      vocabularies[idx].WikiIndex,
+			Kana:           vocabularies[idx].Kana,
+			Kanji:          vocabularies[idx].Kanji,
+			Classification: vocabularies[idx].Classification,
+			Definition:     vocabularies[idx].Definition,
+		})
+	}
+	return vocabulariesDb
 }
 
 func CommitVocabulariesToDB(
-	jlptVocabularies []api.VocabularyDbEntry,
+	jlptVocabularies []apiType.VocabularyDbEntry,
 	dbConn *sql.DB,
 	ctx context.Context,
 	api *types.APIConfig,
@@ -68,7 +85,7 @@ func CommitVocabulariesToDB(
 	}
 	defer tx.Rollback()
 
-	insertCount = 0 // TODO: revisit this? I recall meaning to return the number of added rows
+	insertCount = 0
 	for _, vocab := range jlptVocabularies {
 		_, err := api.DBQueries.CreateVocabulary(ctx, database.CreateVocabularyParams{
 			JlptLevel: database.NullJlptLevelEnum{
@@ -101,6 +118,5 @@ func CommitVocabulariesToDB(
 	}
 
 	tx.Commit()
-
 	return insertCount
 }

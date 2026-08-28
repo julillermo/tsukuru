@@ -1,19 +1,23 @@
 package api
 
+import "github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
+
 type GrammarConceptDbEntryDetails struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
 
 type GrammarConceptDbEntry struct {
-	Id         string `json:"id"`
-	Concept    string `json:"concept" validate:"required"`
-	Definition string `json:"definition" validate:"required"`
+	Id         string          `json:"id"`
+	JLPTLevel  types.JLPTLevel `json:"jlpt_level" validate:"required"`
+	Concept    string          `json:"concept" validate:"required"`
+	Definition string          `json:"definition" validate:"required"`
 }
 
 type GrammarConceptDbEntryUpdate struct {
-	Concept    *string `json:"concept"`
-	Definition *string `json:"definition"`
+	JLPTLevel  types.JLPTLevel `json:"jlpt_level"`
+	Concept    *string         `json:"concept"`
+	Definition *string         `json:"definition"`
 }
 
 type ReqCreateGrammarConcept struct {
@@ -35,4 +39,5 @@ type ResUpdateGrammarConceptById struct {
 type ResGetGrammarConceptById struct {
 	GrammarConceptDbEntryDetails
 	GrammarConceptDbEntry
+	Examples []ExampleSentenceDbEntry `json:"examples"`
 }

@@ -36,6 +36,9 @@ func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 		}
 
 		conceptRes, err := api.DBQueries.CreateGrammarConcept(request.Context(), db.CreateGrammarConceptParams{
+			JlptLevel: db.NullJlptLevelEnum{
+				JlptLevelEnum: db.JlptLevelEnum(reqJSON.JLPTLevel),
+				Valid:         utils.IsJLPTLevel(reqJSON.JLPTLevel)},
 			Concept: sql.NullString{
 				String: reqJSON.Concept,
 				Valid:  len(reqJSON.Concept) > 0,
@@ -58,6 +61,7 @@ func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 			GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
 				Id:         conceptRes.ID.String(),
+				JLPTLevel:  types.JLPTLevel(conceptRes.JlptLevel.JlptLevelEnum),
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},
@@ -91,6 +95,21 @@ func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 			return
 		}
 
+		sentencesRes, err := api.DBQueries.GetExampleSentencesByGrammarConceptId(
+			request.Context(),
+			uuid.NullUUID{
+				UUID:  conceptId,
+				Valid: true,
+			},
+		)
+		if err != nil {
+			log.Print(err)
+			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
+				fmt.Sprintf("error occured retrieving example sentences for grammar_concept_id %s", conceptId),
+			)
+			return
+		}
+
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResGetGrammarConceptById{
 			GrammarConceptDbEntryDetails: apiType.GrammarConceptDbEntryDetails{
 				CreatedAt: conceptRes.CreatedAt.Time.Format(time.RFC3339),
@@ -98,9 +117,11 @@ func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 			GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
 				Id:         conceptRes.ID.String(),
+				JLPTLevel:  types.JLPTLevel(conceptRes.JlptLevel.JlptLevelEnum),
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},
+			Examples: utils.ConvertExampleSetenceDBToApi(sentencesRes),
 		})
 	})
 }
@@ -126,6 +147,9 @@ func UpdateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 
 		conceptRes, err := api.DBQueries.UpdateGrammarConceptById(request.Context(), db.UpdateGrammarConceptByIdParams{
 			ID: conceptId,
+			JlptLevel: db.NullJlptLevelEnum{
+				JlptLevelEnum: db.JlptLevelEnum(reqJSON.JLPTLevel),
+				Valid:         utils.IsJLPTLevel(reqJSON.JLPTLevel)},
 			Concept: sql.NullString{
 				String: utils.GetOptStringInput(reqJSON.Concept),
 				Valid:  utils.ValidateOptStringInput(reqJSON.Concept),
@@ -148,6 +172,7 @@ func UpdateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 			GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
 				Id:         conceptRes.ID.String(),
+				JLPTLevel:  types.JLPTLevel(conceptRes.JlptLevel.JlptLevelEnum),
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},

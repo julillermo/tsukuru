@@ -58,6 +58,7 @@ SELECT
   gc.id AS grammar_concept_id,
   -- gc.created_at AS grammar_concept_created_at,
   -- gc.updated_at AS grammar_concept_updated_at,
+  gc.jlpt_level AS grammar_concept_jlpt_level,
   gc.concept AS grammar_concept,
   gc.definition AS grammar_definition
 FROM example_sentences AS es
@@ -67,15 +68,16 @@ WHERE es.id = $1
 `
 
 type GetExampleSentenceWithGrammarConceptRow struct {
-	ID                 uuid.UUID
-	CreatedAt          sql.NullTime
-	UpdatedAt          sql.NullTime
-	JapaneseText       sql.NullString
-	EnglishMeaning     sql.NullString
-	GrammarConceptID   uuid.NullUUID
-	GrammarConceptID_2 uuid.UUID
-	GrammarConcept     sql.NullString
-	GrammarDefinition  sql.NullString
+	ID                      uuid.UUID
+	CreatedAt               sql.NullTime
+	UpdatedAt               sql.NullTime
+	JapaneseText            sql.NullString
+	EnglishMeaning          sql.NullString
+	GrammarConceptID        uuid.NullUUID
+	GrammarConceptID_2      uuid.UUID
+	GrammarConceptJlptLevel NullJlptLevelEnum
+	GrammarConcept          sql.NullString
+	GrammarDefinition       sql.NullString
 }
 
 func (q *Queries) GetExampleSentenceWithGrammarConcept(ctx context.Context, id uuid.UUID) (GetExampleSentenceWithGrammarConceptRow, error) {
@@ -89,8 +91,52 @@ func (q *Queries) GetExampleSentenceWithGrammarConcept(ctx context.Context, id u
 		&i.EnglishMeaning,
 		&i.GrammarConceptID,
 		&i.GrammarConceptID_2,
+		&i.GrammarConceptJlptLevel,
 		&i.GrammarConcept,
 		&i.GrammarDefinition,
 	)
 	return i, err
+}
+
+const getExampleSentencesByGrammarConceptId = `-- name: GetExampleSentencesByGrammarConceptId :many
+SELECT
+    id,
+    created_at,
+    updated_at,
+    japanese_text,
+    english_meaning,
+    grammar_concept_id
+FROM example_sentences
+WHERE grammar_concept_id = $1
+ORDER BY created_at, id
+`
+
+func (q *Queries) GetExampleSentencesByGrammarConceptId(ctx context.Context, grammarConceptID uuid.NullUUID) ([]ExampleSentence, error) {
+	rows, err := q.db.QueryContext(ctx, getExampleSentencesByGrammarConceptId, grammarConceptID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ExampleSentence
+	for rows.Next() {
+		var i ExampleSentence
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.JapaneseText,
+			&i.EnglishMeaning,
+			&i.GrammarConceptID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

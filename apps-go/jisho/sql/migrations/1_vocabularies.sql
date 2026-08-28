@@ -1,5 +1,6 @@
 -- +goose Up
 CREATE TYPE jlpt_level_enum AS ENUM ('n5', 'n4', 'n3', 'n2', 'n1');
+-- TODO: Revisit whether I would want TZ instead of just timestamp
 CREATE TABLE vocabularies (
   id UUID PRIMARY KEY,
   created_at TIMESTAMP,

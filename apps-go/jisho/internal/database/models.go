@@ -70,6 +70,7 @@ type GrammarConcept struct {
 	ID         uuid.UUID
 	CreatedAt  sql.NullTime
 	UpdatedAt  sql.NullTime
+	JlptLevel  NullJlptLevelEnum
 	Concept    sql.NullString
 	Definition sql.NullString
 }

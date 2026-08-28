@@ -116,6 +116,7 @@ func GetExampleSentenceById(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 			GrammarConcept: apiType.GrammarConceptDbEntry{
 				Id:         sentenceRes.GrammarConceptID.UUID.String(),
+				JLPTLevel:  types.JLPTLevel(sentenceRes.GrammarConceptJlptLevel.JlptLevelEnum),
 				Concept:    sentenceRes.GrammarConcept.String,
 				Definition: sentenceRes.GrammarDefinition.String,
 			},
