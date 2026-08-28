@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -40,10 +41,12 @@ func main() {
 
 	jishoAPI := types.NewAPIConfig(dbQueries)
 
-	api.HealthAPI(serveMux, jishoAPI)          // /api/kenko
-	api.VocabulariesAPI(serveMux, jishoAPI)    // /api/vocabularies
-	api.GrammarConceptsAPI(serveMux, jishoAPI) // /api/grammar_concepts
+	api.HealthAPI(serveMux, jishoAPI)           // /api/kenko
+	api.VocabulariesAPI(serveMux, jishoAPI)     // /api/vocabularies
+	api.GrammarConceptsAPI(serveMux, jishoAPI)  // /api/grammar_concepts
+	api.ExampleSentencesAPI(serveMux, jishoAPI) // /api/example_sentences
 
+	fmt.Printf("Running Jisho Server on port %s\n", jishoServer.Addr)
 	log.Fatal(jishoServer.ListenAndServe())
 }
 
@@ -52,4 +55,6 @@ func main() {
 // - Apply basic protection to select routes (in the future)
 // - Add a condition where if no postgresql server was provided,
 // 		trigger the kezuru scrape and load everything in memory.
-// - Weigh in on whether the repeated API code should be generalized
+// - Weigh in on whether the repeated API code should be generalized/abstracted
+// - Double check whether or not I can just stick with `validate:"required"` instead of
+// 		also having ptrs to make optional payload entries

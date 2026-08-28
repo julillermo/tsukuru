@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -29,6 +30,7 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 
 		reqJSON := apiType.ReqCreateVocabulary{}
 		if err := decoder.Decode(&reqJSON); err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to decode request json")
 			return
 		}
@@ -56,17 +58,18 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 		})
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusInternalServerError, "failure to create vocabulary entry")
 			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResCreateVocabulary{
-			CommonVocabularyDbEntryDetails: apiType.CommonVocabularyDbEntryDetails{
-				Id:        vocabRes.ID.String(),
+			VocabularyDbEntryDetails: apiType.VocabularyDbEntryDetails{
 				CreatedAt: vocabRes.CreatedAt.Time.Format(time.RFC3339),
 				UpdatedAt: vocabRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			VocabularyDbEntry: apiType.VocabularyDbEntry{
+				Id:             vocabRes.ID.String(),
 				JLPTLevel:      types.JLPTLevel(vocabRes.JlptLevel.JlptLevelEnum),
 				WikiIndex:      int(vocabRes.WikiIndex.Int32),
 				Kana:           vocabRes.Kana.String,
@@ -82,30 +85,32 @@ func GetVocabularyByID(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /api/vocabularies/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		vocabId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "malformed vocabulary UUID")
 			return
 		}
 
 		vocabRes, err := api.DBQueries.GetVocabularyById(request.Context(), vocabId)
 		if err != nil {
+			log.Print(err)
 			if errors.Is(err, sql.ErrNoRows) {
 				_ = utils.RespondWithError(writer, http.StatusNotFound,
 					fmt.Sprintf("vocabulary with id %s not found", vocabId),
 				)
 			}
 			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
-				fmt.Sprintf("could not get vocabulary: %s", vocabId),
+				fmt.Sprintf("could not retrieve vocabulary: %s", vocabId),
 			)
 			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResGetVocabularyById{
-			CommonVocabularyDbEntryDetails: apiType.CommonVocabularyDbEntryDetails{
-				Id:        vocabRes.ID.String(),
+			VocabularyDbEntryDetails: apiType.VocabularyDbEntryDetails{
 				CreatedAt: vocabRes.CreatedAt.Time.Format(time.RFC3339),
 				UpdatedAt: vocabRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			VocabularyDbEntry: apiType.VocabularyDbEntry{
+				Id:             vocabRes.ID.String(),
 				WikiIndex:      int(vocabRes.WikiIndex.Int32),
 				Kana:           vocabRes.Kana.String,
 				Kanji:          vocabRes.Kana.String,
@@ -120,6 +125,7 @@ func UpdateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("PATCH /api/vocabularies/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		vocabId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "malformed vocabulary UUID")
 			return
 		}
@@ -129,6 +135,7 @@ func UpdateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
 
 		reqJSON := apiType.ReqUpdateVocabularyById{}
 		if err := decoder.Decode(&reqJSON); err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to decode request json")
 			return
 		}
@@ -159,12 +166,12 @@ func UpdateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResUpdateVocabularyById{
-			CommonVocabularyDbEntryDetails: apiType.CommonVocabularyDbEntryDetails{
-				Id:        vocabRes.ID.String(),
+			VocabularyDbEntryDetails: apiType.VocabularyDbEntryDetails{
 				CreatedAt: vocabRes.CreatedAt.Time.Format(time.RFC3339),
 				UpdatedAt: vocabRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			VocabularyDbEntry: apiType.VocabularyDbEntry{
+				Id:             vocabRes.ID.String(),
 				WikiIndex:      int(vocabRes.WikiIndex.Int32),
 				Kana:           vocabRes.Kana.String,
 				Kanji:          vocabRes.Kanji.String,

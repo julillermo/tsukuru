@@ -1,12 +1,12 @@
 package api
 
-type CommonGrammarConceptDbEntryDetails struct {
-	Id        string `json:"id"`
+type GrammarConceptDbEntryDetails struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
 
 type GrammarConceptDbEntry struct {
+	Id         string `json:"id"`
 	Concept    string `json:"concept" validate:"required"`
 	Definition string `json:"definition" validate:"required"`
 }
@@ -20,7 +20,7 @@ type ReqCreateGrammarConcept struct {
 	GrammarConceptDbEntry
 }
 type ResCreateGrammarConcept struct {
-	CommonGrammarConceptDbEntryDetails
+	GrammarConceptDbEntryDetails
 	GrammarConceptDbEntry
 }
 
@@ -28,11 +28,11 @@ type ReqUpdateGrammarConceptById struct {
 	GrammarConceptDbEntryUpdate
 }
 type ResUpdateGrammarConceptById struct {
-	CommonGrammarConceptDbEntryDetails
+	GrammarConceptDbEntryDetails
 	GrammarConceptDbEntry
 }
 
 type ResGetGrammarConceptById struct {
-	CommonGrammarConceptDbEntryDetails
+	GrammarConceptDbEntryDetails
 	GrammarConceptDbEntry
 }

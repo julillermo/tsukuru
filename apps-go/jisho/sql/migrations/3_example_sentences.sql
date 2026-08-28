@@ -5,7 +5,7 @@ CREATE TABLE example_sentences (
   updated_at TIMESTAMP,
   japanese_text TEXT,
   english_meaning TEXT,
-  grammar_concept_id UUID REFERENCES vocabularies(id)
+  grammar_concept_id UUID REFERENCES grammar_concepts(id)
 );
 
 -- +goose Down

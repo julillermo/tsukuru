@@ -4,13 +4,13 @@ import (
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 )
 
-type CommonVocabularyDbEntryDetails struct {
-	Id        string `json:"id"`
+type VocabularyDbEntryDetails struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
 
 type VocabularyDbEntry struct {
+	Id             string          `json:"id"`
 	JLPTLevel      types.JLPTLevel `json:"jlpt_level" validate:"required"`
 	WikiIndex      int             `json:"wiki_index" validate:"required"`
 	Kana           string          `json:"kana_writing" validate:"required"`
@@ -32,7 +32,7 @@ type ReqCreateVocabulary struct {
 	VocabularyDbEntry
 }
 type ResCreateVocabulary struct {
-	CommonVocabularyDbEntryDetails
+	VocabularyDbEntryDetails
 	VocabularyDbEntry
 }
 
@@ -40,11 +40,11 @@ type ReqUpdateVocabularyById struct {
 	VocabularyDbEntryUpdate
 }
 type ResUpdateVocabularyById struct {
-	CommonVocabularyDbEntryDetails
+	VocabularyDbEntryDetails
 	VocabularyDbEntry
 }
 
 type ResGetVocabularyById struct {
-	CommonVocabularyDbEntryDetails
+	VocabularyDbEntryDetails
 	VocabularyDbEntry
 }

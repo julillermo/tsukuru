@@ -14,3 +14,4 @@ CREATE TABLE vocabularies (
 
 -- +goose Down
 DROP TABLE IF EXISTS vocabularies;
+DROP TYPE IF EXISTS jlpt_level_enum;

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -29,6 +30,7 @@ func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 
 		reqJSON := apiType.ReqCreateGrammarConcept{}
 		if err := decoder.Decode(&reqJSON); err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to decode request json")
 			return
 		}
@@ -44,17 +46,18 @@ func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 		})
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusInternalServerError, "failure to create vocabulary entry")
 			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResCreateGrammarConcept{
-			CommonGrammarConceptDbEntryDetails: apiType.CommonGrammarConceptDbEntryDetails{
-				Id:        conceptRes.ID.String(),
+			GrammarConceptDbEntryDetails: apiType.GrammarConceptDbEntryDetails{
 				CreatedAt: conceptRes.CreatedAt.Time.Format(time.RFC3339),
 				UpdatedAt: conceptRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
+				Id:         conceptRes.ID.String(),
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},
@@ -62,34 +65,39 @@ func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 	})
 }
 
+// TODO: think of way to also retrieve example sentences through grammar concept
+// - Either find a way to conditionally allow retrieving the example sentence alongside this query
+// - Or, Create a dedicated query that does include the example sentences
 func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /api/grammar_concepts/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		conceptId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "malformed grammar UUID")
 			return
 		}
 
 		conceptRes, err := api.DBQueries.GetGrammarConceptById(request.Context(), conceptId)
 		if err != nil {
+			log.Print(err)
 			if errors.Is(err, sql.ErrNoRows) {
 				_ = utils.RespondWithError(writer, http.StatusNotFound,
 					fmt.Sprintf("grammar_concept with id %s not found", conceptId),
 				)
 			}
 			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
-				fmt.Sprintf("could not get grammar_concept: %s", conceptId),
+				fmt.Sprintf("could not retrieve grammar_concept: %s", conceptId),
 			)
 			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResGetGrammarConceptById{
-			CommonGrammarConceptDbEntryDetails: apiType.CommonGrammarConceptDbEntryDetails{
-				Id:        conceptRes.ID.String(),
+			GrammarConceptDbEntryDetails: apiType.GrammarConceptDbEntryDetails{
 				CreatedAt: conceptRes.CreatedAt.Time.Format(time.RFC3339),
 				UpdatedAt: conceptRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
+				Id:         conceptRes.ID.String(),
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},
@@ -101,6 +109,7 @@ func UpdateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("PATCH /api/grammar_concepts/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		conceptId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "malformed grammar_concept UUID")
 			return
 		}
@@ -110,6 +119,7 @@ func UpdateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 
 		reqJSON := apiType.ReqUpdateGrammarConceptById{}
 		if err := decoder.Decode(&reqJSON); err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to decode request json")
 			return
 		}
@@ -126,17 +136,18 @@ func UpdateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 			},
 		})
 		if err != nil {
+			log.Print(err)
 			_ = utils.RespondWithError(writer, http.StatusInternalServerError, fmt.Sprintf("failure to update grammar_concepts entry %v", conceptId))
 			return
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResUpdateGrammarConceptById{
-			CommonGrammarConceptDbEntryDetails: apiType.CommonGrammarConceptDbEntryDetails{
-				Id:        conceptRes.ID.String(),
+			GrammarConceptDbEntryDetails: apiType.GrammarConceptDbEntryDetails{
 				CreatedAt: conceptRes.CreatedAt.Time.Format(time.RFC3339),
 				UpdatedAt: conceptRes.UpdatedAt.Time.Format(time.RFC3339),
 			},
 			GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
+				Id:         conceptRes.ID.String(),
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},
