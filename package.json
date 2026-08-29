@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "kezuru": "cd ./apps-uv/kezuru/ && uv run main.py"
+    "scrape": "cd ./apps-uv/kezuru/ && uv run main.py",
+    "up": "cd ./apps-go/jisho && make up",
+    "down": "cd ./apps-go/jisho && make down",
+    "feed": "cd ./apps-go/jisho/ && make build-importer && make run-importer",
+    "init-project": "pnpm run scrape && pnpm run up && pnpm run feed"
   },
   "keywords": [],
   "author": "",

@@ -35,14 +35,6 @@ def main():
         pretty_print=args.pretty_print,
     )
 
-    # ? JULIUS: Next steps for tsukuru v0.5.0
-    # - Coordinate kezuru & jisho on
-    #   > The location of the output data
-    #   > Should the data be minified or pretty-printed?
-    #   > Should there be automation with forwarding to kezuru-data?
-    # - Jisho randomization API
-    # - Dockerfile / docker compose
-
     # TODO CONTINUATION IDEAS:
     # - Continue to scrape N5 & N4 Kanji
     # - Add unit test to test against a known value
