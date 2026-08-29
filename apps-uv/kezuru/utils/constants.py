@@ -240,35 +240,6 @@ CACHE_DIRS: dict[
     },
 }
 
-OUTPUT_DIR = "./output/"
-OUTPUT_DIRS: dict[JLPTLevelType, dict[JLPTComponentType, str]] = {
-    "n5": {
-        "vocab": f"{OUTPUT_DIR}/vocab_n5.json",
-        "kanji": f"{OUTPUT_DIR}/kanji_n5.json",
-        "grammar": f"{OUTPUT_DIR}/grammar_n5.json",
-    },
-    "n4": {
-        "vocab": f"{OUTPUT_DIR}/vocab_n4.json",
-        "kanji": f"{OUTPUT_DIR}/kanji_n4.json",
-        "grammar": f"{OUTPUT_DIR}/grammar_n4.json",
-    },
-    "n3": {
-        "vocab": f"{OUTPUT_DIR}/vocab_n3.json",
-        "kanji": f"{OUTPUT_DIR}/kanji_n3.json",
-        "grammar": f"{OUTPUT_DIR}/grammar_n3.json",
-    },
-    "n2": {
-        "vocab": f"{OUTPUT_DIR}/vocab_n2.json",
-        "kanji": f"{OUTPUT_DIR}/kanji_n2.json",
-        "grammar": f"{OUTPUT_DIR}/grammar_n2.json",
-    },
-    "n1": {
-        "vocab": f"{OUTPUT_DIR}/vocab_n1.json",
-        "kanji": f"{OUTPUT_DIR}/kanji_n1.json",
-        "grammar": f"{OUTPUT_DIR}/grammar_n1.json",
-    },
-}
-
 SCRAPER_HEADER = {
     "user-agent": "TsukuruKezuruScraper/1.0 (contact: tuliog.projects@gmail.com)",
     "from": "https://github.com/julillermo/tsukuru",

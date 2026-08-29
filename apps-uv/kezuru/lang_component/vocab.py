@@ -12,7 +12,6 @@ from rich import print as rprint
 from utils.constants import (
     CACHE_DIRS,
     CJK_GYOU_DICT,
-    OUTPUT_DIR,
     SCRAPER_HEADER,
     WIKI_BOOKS_ROOT_URL,
     WIKI_JLPT_LEVEL_RESOUCE_LINK,
@@ -38,7 +37,9 @@ from utils.vocab import extract_english_word_classes
 def scrape_vocab(
     levels: list[JLPTLevelType],
     delay_seconds: int | None = 5,
+    output_dir: Path = Path("./output/"),
     saving_strategy: Literal["combined", "individual"] = "combined",
+    pretty_print: bool = False,
 ) -> None:
     """
     Scrape specified Wikipedia JLPT Guide Vocab by level.
@@ -131,7 +132,7 @@ def scrape_vocab(
 
             if saving_strategy == "individual":
                 save_text_to_file(
-                    dir=Path(OUTPUT_DIR),
+                    dir=Path(output_dir),
                     filename=f"vocab_{level}_{romanji_gyou}.json",
                     contents=json.dumps(obj=gyou_word_list, ensure_ascii=False),
                 )
@@ -140,9 +141,13 @@ def scrape_vocab(
 
         if saving_strategy == "combined":
             save_text_to_file(
-                dir=Path(OUTPUT_DIR),
+                dir=Path(output_dir),
                 filename=f"vocab_{level}_combined.json",
-                contents=json.dumps(obj=combined_word_list, ensure_ascii=False),
+                contents=json.dumps(
+                    obj=combined_word_list,
+                    ensure_ascii=False,
+                    indent=(2 if pretty_print else None),
+                ),
             )
 
 

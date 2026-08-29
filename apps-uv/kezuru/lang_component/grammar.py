@@ -10,7 +10,6 @@ from bs4.element import Tag
 from rich import print as rprint
 from utils.constants import (
     CACHE_DIRS,
-    OUTPUT_DIR,
     SCRAPER_HEADER,
     WIKI_JLPT_LEVEL_RESOUCE_LINK,
 )
@@ -27,6 +26,8 @@ from utils.types import GrammarEntryType, JLPTLevelType
 def scrape_grammar(
     levels: list[JLPTLevelType],
     delay_seconds: int | None = 5,
+    output_dir: Path = Path("./output/"),
+    pretty_print: bool = False,
 ) -> None:
     """
     Scrape specified Wikipedia JLPT Guide Grammar by level.
@@ -141,7 +142,11 @@ def scrape_grammar(
                     concepts_list.append(grammar_concept_temp)
 
         save_text_to_file(
-            dir=Path(OUTPUT_DIR),
+            dir=Path(output_dir),
             filename=f"grammar_{level}.json",
-            contents=json.dumps(obj=concepts_list, ensure_ascii=False),
+            contents=json.dumps(
+                obj=concepts_list,
+                ensure_ascii=False,
+                indent=(2 if pretty_print else None),
+            ),
         )
