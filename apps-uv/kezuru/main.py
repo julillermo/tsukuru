@@ -1,9 +1,14 @@
+import argparse
+from pathlib import Path
+
 from lang_component.grammar import scrape_grammar
 from lang_component.vocab import scrape_vocab
 from utils.types import JLPTLevelType
 
 
 def main():
+    args = setup_cli_arguments()
+
     # ! As of checking on 17 Aug 2026,
     #   only n5 and n4 can be properly scraped for vocab, kanji, and grammar
     # These already cover 1200+ scraped words; n5 (~ 650 words), n4 (~ 630 words)
@@ -16,8 +21,27 @@ def main():
         # "n1", # missing / empty / malformed wiki page
     ]
 
-    scrape_vocab(levels=jlpt_levels, delay_seconds=5, saving_strategy="combined")
-    scrape_grammar(levels=jlpt_levels, delay_seconds=5)
+    scrape_vocab(
+        levels=jlpt_levels,
+        delay_seconds=5,
+        output_dir=Path(args.output_dir),
+        saving_strategy=args.saving_strategy,
+        pretty_print=args.pretty_print,
+    )
+    scrape_grammar(
+        levels=jlpt_levels,
+        delay_seconds=5,
+        output_dir=Path(args.output_dir),
+        pretty_print=args.pretty_print,
+    )
+
+    # ? JULIUS: Next steps for tsukuru v0.5.0
+    # - Coordinate kezuru & jisho on
+    #   > The location of the output data
+    #   > Should the data be minified or pretty-printed?
+    #   > Should there be automation with forwarding to kezuru-data?
+    # - Jisho randomization API
+    # - Dockerfile / docker compose
 
     # TODO CONTINUATION IDEAS:
     # - Continue to scrape N5 & N4 Kanji
@@ -36,6 +60,42 @@ def main():
     #   - Install "vulture" package to determine dead/unused code
     #   - Install a static analysis tool for vulnerabilities like `gosec`
     # - Address TODO comments, in general
+
+
+def setup_cli_arguments() -> argparse.Namespace:
+    """
+    -o, --output_dir
+    -ss, --saving-strategy
+    -pp, --pretty-print
+    """
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        default="../../data/",
+        help=("Specify output directory\n(default): '../../data/'"),
+    )
+    parser.add_argument(
+        "-ss",
+        "--saving-strategy",
+        choices=("combined", "individual"),
+        default="combined",
+        help=(
+            "Determines whether to combine or separate outputted vocabulary JSON files.\n"
+            "- 'combined' (default) - save same jlpt level vocabulary as one file.\n"
+            "- 'individual' - save same jlpt leve as separate files based on first character."
+        ),
+    )
+    parser.add_argument(
+        "-pp",
+        "--pretty-print",
+        default=False,
+        action="store_true",
+        help="Add flag to apply pretty-printed JSON formatting. Omit to retain as minified.",
+    )
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
