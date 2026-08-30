@@ -2,6 +2,7 @@ package utils
 
 import (
 	db "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
+	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
 )
 
@@ -35,7 +36,7 @@ func GetOptSliceInput[T any](value *[]T) []T {
 	}
 }
 
-func ConvertExampleSetenceDBToApi(
+func ConvertExampleSetenceSliceDBToAPI(
 	exampleSentencesDb []db.ExampleSentence,
 ) (exampleSentencesApi []apiType.ExampleSentenceDbEntry) {
 	for idx := range exampleSentencesDb {
@@ -49,4 +50,37 @@ func ConvertExampleSetenceDBToApi(
 		)
 	}
 	return exampleSentencesApi
+}
+
+func ConvertVocabularySliceDBtoAPI(
+	vocabulariesDb []db.Vocabulary,
+) (vocabulariesAPI []apiType.VocabularyDbEntry) {
+	for idx := range vocabulariesDb {
+		vocabulariesAPI = append(vocabulariesAPI,
+			apiType.VocabularyDbEntry{
+				Id:             vocabulariesDb[idx].ID.String(),
+				JLPTLevel:      types.JLPTLevel(vocabulariesDb[idx].JlptLevel.JlptLevelEnum),
+				WikiIndex:      int(vocabulariesDb[idx].WikiIndex.Int32),
+				Kana:           vocabulariesDb[idx].Kana.String,
+				Kanji:          vocabulariesDb[idx].Kanji.String,
+				Classification: vocabulariesDb[idx].Classification,
+				Definition:     vocabulariesDb[idx].Definition.String,
+			})
+	}
+	return vocabulariesAPI
+}
+
+func ConvertGrammarConceptsSliceDBtoAPI(
+	grammarConceptsDb []db.GrammarConcept,
+) (grammarConceptsAPI []apiType.GrammarConceptDbEntry) {
+	for idx := range grammarConceptsDb {
+		grammarConceptsAPI = append(grammarConceptsAPI,
+			apiType.GrammarConceptDbEntry{
+				Id:         grammarConceptsDb[idx].ID.String(),
+				JLPTLevel:  types.JLPTLevel(grammarConceptsDb[idx].JlptLevel.JlptLevelEnum),
+				Concept:    grammarConceptsDb[idx].Concept.String,
+				Definition: grammarConceptsDb[idx].Definition.String,
+			})
+	}
+	return grammarConceptsAPI
 }

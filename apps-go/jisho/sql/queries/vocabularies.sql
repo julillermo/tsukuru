@@ -16,7 +16,9 @@ RETURNING *;
 
 
 -- name: GetVocabularyById :one
-SELECT * FROM vocabularies WHERE id=$1;
+SELECT *
+FROM vocabularies
+WHERE id=$1;
 
 
 -- TODO: This is missing JLPT level
@@ -32,3 +34,10 @@ SET
 WHERE
     id=sqlc.arg('id')
 RETURNING *;
+
+
+-- name: GetRandomVocabularies :many
+SELECT *
+FROM vocabularies
+ORDER BY RANDOM()
+LIMIT $1;

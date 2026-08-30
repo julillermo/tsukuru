@@ -19,8 +19,8 @@ import (
 // TODO: These endpoints likely needs to be protected
 func VocabulariesAPI(serveMux *http.ServeMux, api *types.APIConfig) {
 	CreateVocabulary(serveMux, api)
-	GetVocabularyByID(serveMux, api)
-	UpdateVocabularyById(serveMux, api)
+	GetVocabularyByID(serveMux, api)    // /{id}
+	UpdateVocabularyById(serveMux, api) // /{id}
 }
 
 func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {

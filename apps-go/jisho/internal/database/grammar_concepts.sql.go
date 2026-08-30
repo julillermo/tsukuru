@@ -47,7 +47,9 @@ func (q *Queries) CreateGrammarConcept(ctx context.Context, arg CreateGrammarCon
 }
 
 const getGrammarConceptById = `-- name: GetGrammarConceptById :one
-SELECT id, created_at, updated_at, jlpt_level, concept, definition FROM grammar_concepts WHERE id=$1
+SELECT id, created_at, updated_at, jlpt_level, concept, definition
+FROM grammar_concepts
+WHERE id=$1
 `
 
 func (q *Queries) GetGrammarConceptById(ctx context.Context, id uuid.UUID) (GrammarConcept, error) {
@@ -62,6 +64,43 @@ func (q *Queries) GetGrammarConceptById(ctx context.Context, id uuid.UUID) (Gram
 		&i.Definition,
 	)
 	return i, err
+}
+
+const getRandomGrammarConcepts = `-- name: GetRandomGrammarConcepts :many
+SELECT id, created_at, updated_at, jlpt_level, concept, definition
+FROM grammar_concepts
+ORDER BY RANDOM()
+LIMIT $1
+`
+
+func (q *Queries) GetRandomGrammarConcepts(ctx context.Context, limit int32) ([]GrammarConcept, error) {
+	rows, err := q.db.QueryContext(ctx, getRandomGrammarConcepts, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GrammarConcept
+	for rows.Next() {
+		var i GrammarConcept
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.JlptLevel,
+			&i.Concept,
+			&i.Definition,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateGrammarConceptById = `-- name: UpdateGrammarConceptById :one

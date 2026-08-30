@@ -13,7 +13,9 @@ RETURNING *;
 
 
 -- name: GetGrammarConceptById :one
-SELECT * FROM grammar_concepts WHERE id=$1;
+SELECT *
+FROM grammar_concepts
+WHERE id=$1;
 
 
 -- name: UpdateGrammarConceptById :one
@@ -26,3 +28,10 @@ SET
 WHERE
     id=sqlc.arg('id')
 RETURNING *;
+
+
+-- name: GetRandomGrammarConcepts :many
+SELECT *
+FROM grammar_concepts
+ORDER BY RANDOM()
+LIMIT $1;

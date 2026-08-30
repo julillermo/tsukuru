@@ -122,7 +122,7 @@ func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 				Concept:    conceptRes.Concept.String,
 				Definition: conceptRes.Definition.String,
 			},
-			Examples: utils.ConvertExampleSetenceDBToApi(sentencesRes),
+			Examples: utils.ConvertExampleSetenceSliceDBToAPI(sentencesRes),
 		})
 	})
 }

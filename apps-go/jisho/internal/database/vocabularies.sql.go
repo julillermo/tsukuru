@@ -63,8 +63,50 @@ func (q *Queries) CreateVocabulary(ctx context.Context, arg CreateVocabularyPara
 	return i, err
 }
 
+const getRandomVocabularies = `-- name: GetRandomVocabularies :many
+SELECT id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition
+FROM vocabularies
+ORDER BY RANDOM()
+LIMIT $1
+`
+
+func (q *Queries) GetRandomVocabularies(ctx context.Context, limit int32) ([]Vocabulary, error) {
+	rows, err := q.db.QueryContext(ctx, getRandomVocabularies, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Vocabulary
+	for rows.Next() {
+		var i Vocabulary
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.JlptLevel,
+			&i.WikiIndex,
+			&i.Kana,
+			&i.Kanji,
+			pq.Array(&i.Classification),
+			&i.Definition,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getVocabularyById = `-- name: GetVocabularyById :one
-SELECT id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition FROM vocabularies WHERE id=$1
+SELECT id, created_at, updated_at, jlpt_level, wiki_index, kana, kanji, classification, definition
+FROM vocabularies
+WHERE id=$1
 `
 
 func (q *Queries) GetVocabularyById(ctx context.Context, id uuid.UUID) (Vocabulary, error) {
