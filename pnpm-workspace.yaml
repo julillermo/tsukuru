@@ -1,7 +1,29 @@
 packages:
-  - "apps/*"
+  - "apps-ts/*"
 syncInjectedDepsAfterScripts:
   - build
 minimumReleaseAge: 10080
 injectWorkspacePackages: true
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@0.3.0
+  vite-plus: 0.3.0
+overrides:
+  vite@*: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: "*"
+minimumReleaseAgeExclude:
+  - vite-plus
+  - "@voidzero-dev/*"
+  - oxlint
+  - "@oxlint/*"
+  - oxlint-tsgolint
+  - "@oxlint-tsgolint/*"
+  - oxfmt
+  - "@oxfmt/*"
+  - vitest
+  - "@vitest/*"
+
 # forceLegacyDeploy: true

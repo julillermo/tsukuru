@@ -2,6 +2,9 @@
   "name": "tsukuru",
   "version": "0.5.1",
   "description": "vocabulary and concept randomizer for Japanese sentence construction review",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,11 +12,13 @@
     "up": "cd ./apps-go/jisho && make up",
     "down": "cd ./apps-go/jisho && make down",
     "feed": "cd ./apps-go/jisho/ && make build-importer && make run-importer",
-    "init-project": "pnpm run scrape && pnpm run up && pnpm run feed"
+    "init-project": "pnpm run scrape && pnpm run up && pnpm run feed",
+    "prepare": "vp config"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "devDependencies": {
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
