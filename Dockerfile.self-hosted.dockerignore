@@ -1,0 +1,8 @@
+.venv/
+**/.cache/
+**/*.egg-info/
+**/__pycache__/
+apps-uv/kezuru/temp/
+apps-uv/kezuru/output/
+
+**/bin/

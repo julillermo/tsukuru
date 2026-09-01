@@ -1,10 +1,12 @@
 [project]
 name = "tsukuru"
-version = "0.2.0"
+version = "0.5.0"
 description = "vocabulary and concept randomizer for Japanese sentence construction review"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "python-dotenv>=1.2.3",
+]
 
 [tool.uv]
 exclude-newer = "1 week"

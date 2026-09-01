@@ -1,0 +1,42 @@
+# FROM debian:stable-slim
+# FROM postgres:16.15-alpine AS base
+
+# ===== Image build =====
+FROM alpine AS base
+RUN apk add --no-cache \
+        ca-certificates \
+        curl \
+        go \
+    && update-ca-certificates
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+WORKDIR /tsukuru
+COPY ./uv.lock ./
+COPY ./pyproject.toml ./
+COPY ./.python-version ./
+COPY ./apps-uv/kezuru/ ./apps-uv/kezuru/
+COPY ./apps-go/jisho/ ./apps-go/jisho/
+COPY ./scripts/ ./scripts/
+COPY ./data/ ./data/
+RUN uv sync --all-packages
+
+WORKDIR /tsukuru/apps-go/jisho
+RUN mkdir -p ./bin/server
+RUN go build -o ./bin/server/app ./cmd/server
+RUN mkdir -p ./bin/exec/importer
+RUN go build -o ./bin/exec/importer/app ./cmd/exec/importer
+
+
+# ===== resusable jisho container ====
+FROM base AS jisho
+RUN apk add --no-cache \
+        ca-certificates \
+    && update-ca-certificates
+# installing goose form via `go install` consumes more space
+RUN curl -fsSL \
+    https://raw.githubusercontent.com/pressly/goose/master/install.sh |\
+    sh
+RUN chmod +x /usr/local/bin/goose
+
+CMD ["./bin/server/app"]
