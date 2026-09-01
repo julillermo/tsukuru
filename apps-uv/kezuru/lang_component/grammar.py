@@ -28,6 +28,7 @@ def scrape_grammar(
     delay_seconds: int | None = 5,
     output_dir: Path = Path("./output/"),
     pretty_print: bool = False,
+    ignore_cache: bool = False,
 ) -> None:
     """
     Scrape specified Wikipedia JLPT Guide Grammar by level.
@@ -40,9 +41,11 @@ def scrape_grammar(
     # TODO: There's a lot code repeated here from lang_component/vocab.py
     # Refactor to unite them as well as general cleanup
 
+    print(f"IGNORE CACHE: {ignore_cache}")
+
     for level in levels:
         cached_page = get_path_of_latest_file(CACHE_DIRS[level]["grammar"]["root"])
-        if not isNull(cached_page):
+        if not ignore_cache and not isNull(cached_page):
             rprint(
                 f"[green]Loading Wikipedia JLPT {level.capitalize()} root grammar page from latest cached html:[/green] \
                 {cached_page}",

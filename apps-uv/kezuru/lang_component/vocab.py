@@ -40,6 +40,7 @@ def scrape_vocab(
     output_dir: Path = Path("./output/"),
     saving_strategy: Literal["combined", "individual"] = "combined",
     pretty_print: bool = False,
+    ignore_cache: bool = False,
 ) -> None:
     """
     Scrape specified Wikipedia JLPT Guide Vocab by level.
@@ -51,7 +52,7 @@ def scrape_vocab(
 
     for level in levels:
         cached_page = get_path_of_latest_file(CACHE_DIRS[level]["vocab"]["root"])
-        if not isNull(cached_page):
+        if not ignore_cache and not isNull(cached_page):
             rprint(
                 f"[green]Loading Wikipedia JLPT {level.capitalize()} root vocabulary page from latest cached html:[/green] \
                 {cached_page}",
@@ -127,6 +128,7 @@ def scrape_vocab(
                 level=level,
                 romanji_gyou=CJK_GYOU_DICT[cjk_gyou],
                 delay_seconds=delay_seconds,
+                ignore_cache=ignore_cache,
                 # link=gyou_links_dict[cjk_gyou] # The JLPT links to wrong pages
             )
 
@@ -156,12 +158,13 @@ def scrape_gyou_groups(
     romanji_gyou: RomanjiGyouGroupType,
     delay_seconds: int | None = 5,
     link: str | None = None,
+    ignore_cache: bool = False,
 ) -> list[VocabEntryType]:
     # TODO: Add function description for intellisense
     # TODO: Currently a costant. Make this as input comming from scrape_vocab() outout
     cached_page = get_path_of_latest_file(CACHE_DIRS[level]["vocab"][romanji_gyou])
 
-    if not isNull(cached_page):
+    if not ignore_cache and not isNull(cached_page):
         rprint(
             f"[green]Loading JLPT {level.capitalize()} row {romanji_gyou.capitalize()} vocab from latest cached html:[/green] \
             {cached_page}",
