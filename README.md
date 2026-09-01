@@ -15,8 +15,6 @@ Tsukuru is a vocabulary and concept randomizer application to aid in N5 and N4 J
 
 - I couldn't find an application specific to the way I want to review Japanese sentence construction, so I made one instead. There is typically a long waiting period leading up to the JLPT exam, and I anticipated difficulty in sustaining Japanese concepts throughout this time. I figured that randomized self-study would be a good approach based on the **"interleaving"** learning strategy. I was hoping to find a dedicated application with a targetted set of **words**, **kanji**, and **concepts** for my **N5/N4** level, but such didn't appear to exist.
 
-<!-- TODO Likely move to a more specific location instead of the README later on-->
-
 ### Reason for sourcing from Wikibooks
 
 - The other resources I found previously were mostly publications or materials with **restrictive licensing**. The [Wikibooks JLPT content](https://en.wikibooks.org/wiki/JLPT_Guide), on the other hand, is freely available under the [Creative Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/) as well as having dedicated sections for specific JLPT N-levels.
