@@ -6,3 +6,5 @@ apps-uv/kezuru/temp/
 apps-uv/kezuru/output/
 
 **/bin/
+
+!data/*

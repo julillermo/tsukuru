@@ -16,7 +16,7 @@ def main():
     rprint("[green]🥄 Running JLPT scraping and data generation ... [/green]")
     jlpt_data_dir = Path("./data/")  # Relative to project root
     if jlpt_data_dir.exists() and any(
-        path.is_file() for path in jlpt_data_dir.iterdir()
+        path.is_file() and path.name != ".gitkeep" for path in jlpt_data_dir.iterdir()
     ):
         rprint(
             "[yellow]JLPT Data already generated; skipping repeat of JLPT data generation.[/yellow].\n"

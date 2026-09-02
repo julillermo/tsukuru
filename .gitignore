@@ -141,4 +141,5 @@ vite.config.ts.timestamp-*
 # Custom
 .codex
 .venv
-data
+data/*
+!/data/.gitkeep

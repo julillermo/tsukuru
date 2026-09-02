@@ -247,7 +247,6 @@ def scrape_gyou_groups(
                     if col_idx == 0:
                         if not isNull(col_data_tag.string):
                             # TODO: improve int conversion. Works for now, but not general enough to work in other cases
-                            print(f"col_data_tag.string: {col_data_tag.string!r}")
                             try:
                                 number_value = int(col_data_tag.string)
                                 rprint(
