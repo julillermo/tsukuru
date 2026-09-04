@@ -25,5 +25,7 @@ minimumReleaseAgeExclude:
   - "@oxfmt/*"
   - vitest
   - "@vitest/*"
+allowBuilds:
+  esbuild: true
 
 # forceLegacyDeploy: true
