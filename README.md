@@ -4,7 +4,7 @@ Tsukuru is a vocabulary and concept randomizer application to aid in N5 and N4 J
 
 🚧 This project is currently under construction. It already has 2 of the 3 planned components of the monorepo full-stack project, with the frontend underway:
 
-- **Tsukuru** (monorepo) ![Monorepo main-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fpackage.json&query=version&label=main&color=4682B4) ![Monorepo dev-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fdev%2Fpackage.json&query=version&label=dev&color=B4CFEC)
+- **Tsukuru** (monorepo) ![Monorepo main-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fpackage.json&query=version&label) ![Monorepo dev-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fdev%2Fpackage.json&query=version&label=dev&color=B4CFEC)
 - **Kezuru** (data sourcing) ![Kezuru main-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=main&color=08A04B) ![Kezuru dev-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fdev%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=dev&color=8A9A5B) ![Kezuru kezuru-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fkezuru%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=kezuru-branch&color=73A16C)
   - [Kezuru data repo](https://github.com/julillermo/kezuru-jlpt-data)
 
@@ -68,7 +68,7 @@ Perform the following steps if you were only intending to try out Tsukuru short-
 
 ## Usage
 
-The **frontend** for Tsukuru is currently **under construction**, but you can already get the general idea of the appl by trying out the primary API of the project. Run the following CURL command and test out different values for `concepts` and `vocabs` to your liking 🤓.
+The **frontend** for Tsukuru is currently **under construction**, but you can already get the general idea of the app by trying out the primary API of the project. Run the following CURL command and test out different values for `concepts` and `vocabs` to your liking 🤓.
 
 ```sh
 curl --request GET \
@@ -81,45 +81,62 @@ Example Output:
 {
   "vocabularies": [
     {
-      "id": "a15c5bc1-8899-4cb0-bba3-e9328cd29961",
-      "jlpt_level": "n4",
-      "wiki_index": 246,
-      "kana_writing": "さいきん",
-      "kanji": "最近",
-      "classification": [],
-      "definition": "recently"
+      "id": "0c7f3da4-55fa-4da3-aa80-249273162dc5",
+      "jlpt_level": "n5",
+      "wiki_index": 347,
+      "kana_writing": "~だい",
+      "kanji": "~台",
+      "classification": ["suffix"],
+      "definition": "counter for vehicles"
     },
     {
-      "id": "15997a40-6374-4257-8dcd-fed0942fdfc8",
-      "jlpt_level": "n4",
-      "wiki_index": 375,
-      "kana_writing": "たずねる",
-      "kanji": "",
-      "classification": [],
-      "definition": "to visit, to pay a visit to"
-    },
-    {
-      "id": "2eb31b2d-2f5e-4c58-8f92-ab112ec6fbd0",
-      "jlpt_level": "n4",
-      "wiki_index": 597,
-      "kana_writing": "ゆ",
-      "kanji": "",
-      "classification": ["noun"],
-      "definition": "steam"
+      "id": "d3f45eff-8dae-41d5-889a-126e9edcee5e",
+      "jlpt_level": "n5",
+      "wiki_index": 326,
+      "kana_writing": "せまい",
+      "kanji": "狭い",
+      "classification": ["adjective"],
+      "definition": "narrow, confined, small"
     }
   ],
   "grammar_concepts": [
     {
-      "id": "95b03cee-33d7-450d-9b8a-33d46ac5ec28",
-      "jlpt_level": "n4",
-      "concept": "～ておく",
-      "definition": "It means to do something in advance."
+      "created_at": "2026-09-05T22:56:32Z",
+      "updated_at": "2026-09-05T22:56:32Z",
+      "id": "efe52b3c-9ae8-42ce-9cb8-528ba53e4ada",
+      "jlpt_level": "n5",
+      "concept": "と",
+      "definition": "This is a particle used to link nouns in a complete list.",
+      "examples": [
+        {
+          "id": "4218e782-310c-4db7-9e06-b09929383653",
+          "grammar_concept_id": "",
+          "japanese_text": "そのサラダはレタスと にんじん と ラディッシュから　作り（つくり）ました。",
+          "english_meaning": "The salad was made from lettuce, carrot, and radish."
+        }
+      ]
     },
     {
-      "id": "102eaae5-6a24-4fa2-95c1-8c0841577faf",
-      "jlpt_level": "n5",
-      "concept": "～まえに",
-      "definition": "It means \"before doing (something)\" or \"ago\" (like 3 days ago)."
+      "created_at": "2026-09-05T22:56:32Z",
+      "updated_at": "2026-09-05T22:56:32Z",
+      "id": "041e9b80-1d13-4b88-95e9-5a51bf06a34f",
+      "jlpt_level": "n4",
+      "concept": "～のような",
+      "definition": "This pattern acts as an adjective for describing nouns.",
+      "examples": [
+        {
+          "id": "9225a902-b645-49bb-bddc-9f67cacce5c3",
+          "grammar_concept_id": "",
+          "japanese_text": "ある意味（いみ）で、スージーは私（わたし）のお母（おかあ）さんのような ものだ。",
+          "english_meaning": "In a way, Susie seems like my mother."
+        },
+        {
+          "id": "d9043109-8e88-4f59-a270-b2a84525bf5c",
+          "grammar_concept_id": "",
+          "japanese_text": "貴方（あなた）は天使（てんし）のような 子（こ）だ。",
+          "english_meaning": "You are an angel of a child."
+        }
+      ]
     }
   ]
 }
