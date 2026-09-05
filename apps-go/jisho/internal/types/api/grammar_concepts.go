@@ -42,3 +42,17 @@ type ResGetGrammarConceptById struct {
 	GrammarConceptDbEntry
 	Examples []ExampleSentenceDbEntry `json:"examples"`
 }
+
+type GrammarConceptWithExampleSetenceJoin struct {
+	GrammarConceptDbEntryDetails
+	GrammarConceptDbEntry
+	ExampleSentenceID           string `json:"example_sentence_id"`
+	ExampleSentenceJapaneseText string `json:"example_japanese_text"`
+	ExampleSentenceEnglishText  string `json:"example_english_text"`
+}
+
+type ResGetRandomGrammarConcept struct {
+	GrammarConceptDbEntryDetails
+	GrammarConceptDbEntry
+	Examples []ExampleSentenceDbEntry `json:"examples"`
+}
