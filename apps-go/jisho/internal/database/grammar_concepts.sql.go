@@ -67,21 +67,54 @@ func (q *Queries) GetGrammarConceptById(ctx context.Context, id uuid.UUID) (Gram
 }
 
 const getRandomGrammarConcepts = `-- name: GetRandomGrammarConcepts :many
-SELECT id, created_at, updated_at, jlpt_level, concept, definition
-FROM grammar_concepts
-ORDER BY RANDOM()
-LIMIT $1
+WITH selected_concepts AS (
+    SELECT
+        gc.id,
+        gc.created_at,
+        gc.updated_at,
+        gc.jlpt_level,
+        gc.concept,
+        gc.definition
+    FROM grammar_concepts AS gc
+    ORDER BY RANDOM()
+    LIMIT $1
+)
+SELECT
+    sc.id,
+    sc.created_at,
+    sc.updated_at,
+    sc.jlpt_level,
+    sc.concept,
+    sc.definition,
+    es.id AS example_sentence_id,
+    es.japanese_text AS example_sentence_japanese_text,
+    es.english_meaning AS example_sentence_english_text
+FROM selected_concepts AS sc
+LEFT JOIN example_sentences AS es
+    ON sc.id = es.grammar_concept_id
 `
 
-func (q *Queries) GetRandomGrammarConcepts(ctx context.Context, limit int32) ([]GrammarConcept, error) {
+type GetRandomGrammarConceptsRow struct {
+	ID                          uuid.UUID
+	CreatedAt                   sql.NullTime
+	UpdatedAt                   sql.NullTime
+	JlptLevel                   NullJlptLevelEnum
+	Concept                     sql.NullString
+	Definition                  sql.NullString
+	ExampleSentenceID           uuid.NullUUID
+	ExampleSentenceJapaneseText sql.NullString
+	ExampleSentenceEnglishText  sql.NullString
+}
+
+func (q *Queries) GetRandomGrammarConcepts(ctx context.Context, limit int32) ([]GetRandomGrammarConceptsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getRandomGrammarConcepts, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GrammarConcept
+	var items []GetRandomGrammarConceptsRow
 	for rows.Next() {
-		var i GrammarConcept
+		var i GetRandomGrammarConceptsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.CreatedAt,
@@ -89,6 +122,9 @@ func (q *Queries) GetRandomGrammarConcepts(ctx context.Context, limit int32) ([]
 			&i.JlptLevel,
 			&i.Concept,
 			&i.Definition,
+			&i.ExampleSentenceID,
+			&i.ExampleSentenceJapaneseText,
+			&i.ExampleSentenceEnglishText,
 		); err != nil {
 			return nil, err
 		}
