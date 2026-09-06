@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"time"
+
 	db "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
@@ -82,5 +84,46 @@ func ConvertGrammarConceptsSliceDBtoAPI(
 				Definition: grammarConceptsDb[idx].Definition.String,
 			})
 	}
+	return grammarConceptsAPI
+}
+
+func ConvertGrammarConceptsRowDBtoAPI(
+	grammarConceptsDb []db.GetRandomGrammarConceptsRow,
+) (grammarConceptsAPI []apiType.ResGetRandomGrammarConcept) {
+	for _, gConcept := range grammarConceptsDb {
+		conceptAlreadyIncluded := false
+		for gcApiIdx, includedConcepts := range grammarConceptsAPI {
+			if gConcept.ID.String() == includedConcepts.Id {
+				conceptAlreadyIncluded = true
+				grammarConceptsAPI[gcApiIdx].Examples = append(includedConcepts.Examples,
+					apiType.ExampleSentenceDbEntry{
+						Id:             gConcept.ExampleSentenceID.UUID.String(),
+						JapaneseText:   gConcept.ExampleSentenceJapaneseText.String,
+						EnglishMeaning: gConcept.ExampleSentenceEnglishText.String,
+					})
+			}
+		}
+
+		if !conceptAlreadyIncluded {
+			grammarConceptsAPI = append(grammarConceptsAPI, apiType.ResGetRandomGrammarConcept{
+				GrammarConceptDbEntryDetails: apiType.GrammarConceptDbEntryDetails{
+					CreatedAt: gConcept.CreatedAt.Time.Format(time.RFC3339),
+					UpdatedAt: gConcept.UpdatedAt.Time.Format(time.RFC3339),
+				},
+				GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
+					Id:         gConcept.ID.String(),
+					JLPTLevel:  types.JLPTLevel(gConcept.JlptLevel.JlptLevelEnum),
+					Concept:    gConcept.Concept.String,
+					Definition: gConcept.Definition.String,
+				},
+				Examples: []apiType.ExampleSentenceDbEntry{{
+					Id:             gConcept.ExampleSentenceID.UUID.String(),
+					JapaneseText:   gConcept.ExampleSentenceJapaneseText.String,
+					EnglishMeaning: gConcept.ExampleSentenceEnglishText.String,
+				}},
+			})
+		}
+	}
+
 	return grammarConceptsAPI
 }

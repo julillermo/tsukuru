@@ -43,7 +43,7 @@ build-server:
 
 .PHONY: run-server
 run-server:
-	${server_build_dir}/app
+	REPO_ROOT=../../ ${server_build_dir}/app
 
 .PHONY: dev-server
 dev-server: build-server

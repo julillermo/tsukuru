@@ -29,9 +29,29 @@ WHERE
     id=sqlc.arg('id')
 RETURNING *;
 
-
 -- name: GetRandomGrammarConcepts :many
-SELECT *
-FROM grammar_concepts
-ORDER BY RANDOM()
-LIMIT $1;
+WITH selected_concepts AS (
+    SELECT
+        gc.id,
+        gc.created_at,
+        gc.updated_at,
+        gc.jlpt_level,
+        gc.concept,
+        gc.definition
+    FROM grammar_concepts AS gc
+    ORDER BY RANDOM()
+    LIMIT $1
+)
+SELECT
+    sc.id,
+    sc.created_at,
+    sc.updated_at,
+    sc.jlpt_level,
+    sc.concept,
+    sc.definition,
+    es.id AS example_sentence_id,
+    es.japanese_text AS example_sentence_japanese_text,
+    es.english_meaning AS example_sentence_english_text
+FROM selected_concepts AS sc
+LEFT JOIN example_sentences AS es
+    ON sc.id = es.grammar_concept_id;

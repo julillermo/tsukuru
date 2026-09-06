@@ -53,7 +53,7 @@ SELECT
   es.updated_at,
   es.japanese_text,
   es.english_meaning,
-  es.grammar_concept_id,
+  es.grammar_concept_id, -- TODO: this seems unused and can be removed
 
   gc.id AS grammar_concept_id,
   -- gc.created_at AS grammar_concept_created_at,

@@ -71,7 +71,7 @@ func GetRandomSentenceConstructs(serveMux *http.ServeMux, api *types.APIConfig) 
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResTsukuruGetRandomConstructs{
 			Vocabularies:    utils.ConvertVocabularySliceDBtoAPI(vocabulariesRes),
-			GrammarConcepts: utils.ConvertGrammarConceptsSliceDBtoAPI(grammarConceptsRes),
+			GrammarConcepts: utils.ConvertGrammarConceptsRowDBtoAPI(grammarConceptsRes),
 		})
 	})
 }
