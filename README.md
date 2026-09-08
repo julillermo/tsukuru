@@ -4,7 +4,7 @@ Tsukuru is a vocabulary and concept randomizer application to aid in N5 and N4 J
 
 🚧 This project is currently under construction. It already has 2 of the 3 planned components of the monorepo full-stack project, with the frontend underway:
 
-- **Tsukuru** (monorepo) ![Monorepo main-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fpackage.json&query=version&label) ![Monorepo dev-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fdev%2Fpackage.json&query=version&label=dev&color=B4CFEC)
+- **Tsukuru** (monorepo) ![Monorepo main-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fpackage.json&query=version&label=main) ![Monorepo dev-branch version badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fdev%2Fpackage.json&query=version&label=dev&color=B4CFEC)
 - **Kezuru** (data sourcing) ![Kezuru main-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fmain%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=main&color=08A04B) ![Kezuru dev-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fdev%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=dev&color=8A9A5B) ![Kezuru kezuru-branch version badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjulillermo%2Ftsukuru%2Fkezuru%2Fapps-uv%2Fkezuru%2Fpyproject.toml&query=project.version&label=kezuru-branch&color=73A16C)
   - [Kezuru data repo](https://github.com/julillermo/kezuru-jlpt-data)
 
@@ -67,6 +67,9 @@ Perform the following steps if you were only intending to try out Tsukuru short-
 🧹 All done! You now no longer have any tsukuru-related files besides the repo copy.
 
 ## Usage
+
+> [!NOTE]
+> 🌱 The Kami frontend is making good progress. You can test it out through either the `dev` or `kami` branch, but currently requires directly running the host system.
 
 The **frontend** for Tsukuru is currently **under construction**, but you can already get the general idea of the app by trying out the primary API of the project. Run the following CURL command and test out different values for `concepts` and `vocabs` to your liking 🤓.
 
@@ -145,3 +148,4 @@ Example Output:
 ## Contributing
 
 - There are no specific rules on how to contribute at the moment, so feel free to contribute in any way possible, especially with bug reports 😁.
+- Feel free to use AI, but please keep AI-majority driven contributions to a minimum.

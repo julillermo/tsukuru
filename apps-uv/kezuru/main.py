@@ -55,6 +55,9 @@ def main():
     # - CI/CD integration
     #   - Install "vulture" package to determine dead/unused code
     #   - Install a static analysis tool for vulnerabilities like `gosec`
+    # - Have a sort of known "migrations" file, so that newly generated lists
+    #       will also reflect latest changes (once granular updates become more common).
+    #       Please also have the option to compact these "migrations"
     # - Address TODO comments, in general
 
 

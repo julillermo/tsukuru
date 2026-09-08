@@ -1,3 +1,4 @@
+import { PageUnderConstruction } from "@/components/pages/PageUnderConstruction";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -5,9 +6,5 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  return (
-    <div>
-      <h3>Welcome to Tsukuru!</h3>
-    </div>
-  );
+  return <PageUnderConstruction />;
 }

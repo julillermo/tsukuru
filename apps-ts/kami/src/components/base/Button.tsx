@@ -13,12 +13,12 @@ type TsukuruButtonProps = {
 
 export function Button(props: RACButtonProps & TsukuruButtonProps) {
   return (
-    <RACButton {...props}>
+    <RACButton {...props} className={styles.button}>
       {composeRenderProps(props.children, (children) => (
-        <div className={styles.layout}>
-          {props.prefix}
-          {children}
-          {props.suffix}
+        <div className={styles.content}>
+          <div>{props.prefix}</div>
+          <div>{children}</div>
+          <div>{props.suffix}</div>
         </div>
       ))}
     </RACButton>
