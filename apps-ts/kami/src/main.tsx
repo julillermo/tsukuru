@@ -26,3 +26,12 @@ if (!rootElement.innerHTML) {
     </StrictMode>,
   );
 }
+
+// TODO CONTINUATION:
+// - Copy previous projects for vite CI/CD deployment to github
+// - Add light/dark mode toggle
+// - Better handle theming.
+//    - Currently colors are hardcoded into the styling
+//    - More generalized selections for font sizes
+// - Move the components as part of their own UI/Components monorepo sub-application
+// - Copy over the accent() utility function for colors from Learning-React

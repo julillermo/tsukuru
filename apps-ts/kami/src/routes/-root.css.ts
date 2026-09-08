@@ -6,7 +6,8 @@ export const appLayout = style({
   display: "flex",
   gap: 8,
   flexDirection: "column",
-  minHeight: "98vh",
+  height: "calc(100vh - 16px)",
+  maxWidth: "calc(100vw - 16px)",
 });
 
 export const headerLayout = style({

@@ -3,6 +3,7 @@ import * as styles from "./ChipLink.css";
 import { Link as RACLink, type LinkProps } from "react-aria-components/Link";
 
 type ChipLinkProps = {
+  prefix?: ReactNode;
   suffix?: ReactNode;
 };
 
@@ -17,6 +18,7 @@ export function ChipLink(props: LinkProps & ChipLinkProps) {
         className={styles.layout}
       >
         <>
+          {props.prefix}
           {props.children}
           {props.suffix}
         </>
