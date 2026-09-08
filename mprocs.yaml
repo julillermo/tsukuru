@@ -1,0 +1,5 @@
+procs:
+  jisho:
+    cmd: ["pnpm", "run", "dev-jisho"]
+  kami:
+    cmd: ["pnpm", "run", "dev-kami"]

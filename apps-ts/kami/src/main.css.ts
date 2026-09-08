@@ -7,15 +7,20 @@ import { globalStyle } from "@vanilla-extract/css";
 // #e6c8c6
 
 globalStyle("html, body, #root", {
-  fontFamily: "Noto Sans, Helvetica, Arial, sans-serif",
+  fontFamily: "Noto Sans JP, Noto Sans, Helvetica, Arial, sans-serif",
   lineHeight: 1.5,
   fontWeight: 400,
   fontSize: 18,
+  textRendering: "optimizeLegibility",
   colorScheme: "light dark",
   color: "rgba(45, 45, 45, 0.85)",
-  // color: "coral",
+  boxSizing: "border-box",
   backgroundColor: "#d4e6c6",
-  textRendering: "optimizeLegibility",
+});
+
+// Applied to all elements
+globalStyle("*, *::before, *::after", {
+  boxSizing: "border-box", // (content dimension + padding + border) included in measurement
 });
 
 globalStyle("a", {
