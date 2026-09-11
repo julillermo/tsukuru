@@ -4,10 +4,12 @@ export type ConstructType = "vocabulary" | "grammar_concept";
 
 export type VocabularyClient = VocabularyApi & {
   type: ConstructType;
+  selected: boolean;
 };
 
 export type GrammarConceptClient = GrammarConceptApi & {
   type: ConstructType;
+  selected: boolean;
 };
 
 export type SentenceConstruct = VocabularyClient | GrammarConceptClient;

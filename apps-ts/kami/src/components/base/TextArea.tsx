@@ -1,18 +1,39 @@
+import { Text as RACText } from "react-aria-components";
 import {
+  FieldError as RACFieldError,
   Label as RACLabel,
-  TextField as RACTextField,
   TextArea as RACTextArea,
+  TextField as RACTextField,
   type TextFieldProps as RACTextFieldProps,
-} from "react-aria-components";
+  type ValidationResult as RACValidationResult,
+} from "react-aria-components/TextField";
+import * as styles from "./TextArea.css";
 
-type TsukuruTextAreaProps = {};
+type TsukuruTextAreaProps = {
+  label?: string;
+  description?: string;
+  placeholder?: string;
+  errorMessage?: string | ((validation: RACValidationResult) => string);
+};
 
-// TODO: Customization for this was left unfinished
-export function TextArea(props: RACTextFieldProps & TsukuruTextAreaProps) {
+export function TextArea({
+  label,
+  description,
+  placeholder,
+  errorMessage,
+  ...props
+}: RACTextFieldProps & TsukuruTextAreaProps) {
   return (
-    <RACTextField {...props}>
-      <RACLabel></RACLabel>
-      <RACTextArea placeholder={"text"} />
+    <RACTextField className={styles.layout} {...props}>
+      {label !== undefined && <RACLabel className={styles.label}>{label}</RACLabel>}
+      <RACTextArea className={styles.textArea} placeholder={placeholder} />
+      {/* TODO: Eventually update the description to appear as a tool tip (or have an option for it) */}
+      {description !== undefined && (
+        <RACText slot="description" className={styles.description}>
+          {description}
+        </RACText>
+      )}
+      {errorMessage !== undefined && <RACFieldError>{errorMessage}</RACFieldError>}
     </RACTextField>
   );
 }

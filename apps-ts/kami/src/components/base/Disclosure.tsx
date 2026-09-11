@@ -2,7 +2,7 @@ import type * as CSS from "csstype";
 import { ChevronRightIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import {
-  Button as RACBUtton,
+  Button as RACButton,
   Disclosure as RACDisclosure,
   DisclosurePanel as RACDisclosurePanel,
   Heading as RACHeading,
@@ -63,14 +63,14 @@ export function DisclosureHeader({
 }: RACHeadingProps & TsukuruDisclosureHeaderProps) {
   return (
     <RACHeading {...props} className={styles.heading}>
-      <RACBUtton slot="trigger" onClick={onExpand} className={styles.expandButton}>
+      <RACButton slot="trigger" onClick={onExpand} className={styles.expandButton}>
         {buttonIcon ? (
           <div className={isExpanded ? styles.chevronOpen : undefined}>{buttonIcon}</div>
         ) : (
           <ChevronRightIcon className={isExpanded ? styles.chevronOpen : undefined} />
         )}
-      </RACBUtton>
-      <span style={customStyle}>{props.children}</span>
+      </RACButton>
+      <div style={{ ...customStyle, flex: 1 }}>{props.children}</div>
     </RACHeading>
   );
 }

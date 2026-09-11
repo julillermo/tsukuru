@@ -9,16 +9,33 @@ export const sentenceConstructs = style({
   gap: 16,
 
   padding: 2, // Prevents outlines from being clipped when scrollbar present
+  paddingRight: 10,
   overflowY: "auto",
 });
 
 export const constructCardHeader = style({
   display: "flex",
+  flex: 1,
+  flexDirection: "row",
+  justifyContent: "space-between",
+
+  cursor: "pointer",
+});
+
+export const constructCardHeaderContent = style({
+  display: "flex",
   flexDirection: "row",
   gap: 16,
   alignItems: "center",
-
   fontSize: 32,
+});
+
+export const constructControlsGroup = style({
+  marginRight: 16,
+});
+
+export const constructControl = style({
+  cursor: "pointer",
 });
 
 export const constructCardJLPTLevel = style({

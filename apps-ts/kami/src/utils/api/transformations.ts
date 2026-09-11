@@ -1,8 +1,8 @@
 import type { ConstructsApi } from "@/types/api/constructs";
 import type {
+  GrammarConceptClient,
   SentenceConstruct,
   VocabularyClient,
-  GrammarConceptClient,
 } from "@/types/client/constructs";
 
 export function transformConstructsApiToClient(constructsApi: ConstructsApi): SentenceConstruct[] {
@@ -10,6 +10,7 @@ export function transformConstructsApiToClient(constructsApi: ConstructsApi): Se
     constructsApi?.vocabularies?.map((vocab) => {
       return {
         type: "vocabulary",
+        selected: false,
         ...vocab,
       };
     }) ?? [];
@@ -17,6 +18,7 @@ export function transformConstructsApiToClient(constructsApi: ConstructsApi): Se
     constructsApi?.grammar_concepts?.map((grammarConcept) => {
       return {
         type: "grammar_concept",
+        selected: false,
         ...grammarConcept,
       };
     }) ?? [];
