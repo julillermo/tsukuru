@@ -18,6 +18,5 @@ export const subSectionHeight = createVar();
 export const subsection = style({
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-between",
   height: fallbackVar(subSectionHeight, "auto"),
 });

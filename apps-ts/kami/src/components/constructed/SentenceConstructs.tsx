@@ -8,14 +8,17 @@ import {
   type VocabularyClient,
 } from "@/types/client/constructs";
 import { transformConstructsApiToClient } from "@/utils/api/transformations";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircleSmallIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { type Key } from "react-aria-components";
 import { Button } from "../base/Button";
 import { Card } from "../base/Card";
 import { Disclosure } from "../base/Disclosure";
 import { NumberField } from "../base/NumberField";
 import { Section, Subsection } from "../base/Section";
+import { ToggleButton } from "../base/ToggleButton";
+import { ToggleButtonGroup } from "../base/ToggleButtonGroup";
 import * as styles from "./SentenceConstructs.css";
 
 type ConstructGeneratorProps = {
@@ -24,12 +27,15 @@ type ConstructGeneratorProps = {
   setSelectedConstructs: React.Dispatch<React.SetStateAction<SentenceConstruct[]>>;
 };
 export function ConstructBox(props: ConstructGeneratorProps) {
+  const queryClient = useQueryClient();
   const [vocabNum, setVocabNum] = useState<number>(0);
   const [conceptNum, setConceptNum] = useState<number>(0);
+  const [queryModes, setQueryModes] = useState(new Set<Key>(["accumulate"])); // "accumulate" | "refresh"
 
   // TODO: Eventually add zod for data validation
   //    This means that I could also just use zod's infer instead of duplicating types
   // TODO: It also seems that I don't need the created_at and updated_at from get random API
+  // TODO: Eventually add a toggle to hide selected contructs
 
   const {
     data: constructsData,
@@ -46,18 +52,12 @@ export function ConstructBox(props: ConstructGeneratorProps) {
     enabled: false,
   });
 
-  useEffect(() => {
-    if (constructsIsFetched) {
-      props.setConstructs(transformConstructsApiToClient(constructsData));
-    }
-  }, [constructsData]);
-
-  const handleConstructSelected = (constructId: string) => {
-    props.setConstructs((prevConstructs) => {
-      return prevConstructs.map((construct) =>
+  const handleConstructSelect = (constructId: string) => {
+    props.setConstructs((prevConstructs) =>
+      prevConstructs.map((construct) =>
         construct.id === constructId ? { ...construct, selected: !construct.selected } : construct,
-      );
-    });
+      ),
+    );
 
     const selectedConstruct = props.constructs.find((construct) => construct.id === constructId);
     if (selectedConstruct != undefined) {
@@ -72,11 +72,32 @@ export function ConstructBox(props: ConstructGeneratorProps) {
     }
   };
 
+  useEffect(() => {
+    if (constructsIsFetched) {
+      const transformedData = transformConstructsApiToClient(constructsData);
+      if (queryModes.has("refresh")) {
+        const selected = props.constructs.filter((d) => d.selected);
+        props.setConstructs([...selected, ...transformedData]);
+      } else if (queryModes.has("accumulate")) {
+        props.setConstructs((prev) => [...prev, ...transformedData]);
+      }
+    }
+    // Clean up revents data lingering from component unmount (user changes page)
+    return () => {
+      queryClient.removeQueries({
+        queryKey: ["randomConstructs"],
+        exact: true,
+      });
+    };
+  }, [constructsData]);
+
   return (
     <Section>
       {/* Query Control */}
       <Subsection>
         <ConstructQueryControl
+          queryModes={queryModes}
+          setQueryModes={setQueryModes}
           vocabNum={vocabNum}
           setVocabNum={setVocabNum}
           conceptNum={conceptNum}
@@ -92,7 +113,7 @@ export function ConstructBox(props: ConstructGeneratorProps) {
       <Subsection grow>
         <SentenceConstructs
           constructs={props.constructs}
-          onConstructSelect={handleConstructSelected}
+          onConstructSelect={handleConstructSelect}
         />
       </Subsection>
     </Section>
@@ -100,6 +121,8 @@ export function ConstructBox(props: ConstructGeneratorProps) {
 }
 
 type ConstructQueryControlProps = {
+  queryModes: Set<Key>;
+  setQueryModes: React.Dispatch<React.SetStateAction<Set<Key>>>;
   vocabNum: number;
   setVocabNum: React.Dispatch<React.SetStateAction<number>>;
   conceptNum: number;
@@ -107,6 +130,8 @@ type ConstructQueryControlProps = {
   onButtonClick: () => void;
 };
 function ConstructQueryControl({
+  queryModes,
+  setQueryModes,
   vocabNum,
   setVocabNum,
   conceptNum,
@@ -114,7 +139,20 @@ function ConstructQueryControl({
   onButtonClick,
 }: ConstructQueryControlProps) {
   return (
-    <>
+    <div className={styles.constructQueryControl}>
+      <ToggleButtonGroup
+        selectionMode="single"
+        disallowEmptySelection={true}
+        selectedKeys={queryModes}
+        onSelectionChange={setQueryModes}
+      >
+        <ToggleButton id="refresh" position="left" isSelected={queryModes.has("refresh")}>
+          Refresh
+        </ToggleButton>
+        <ToggleButton id="accumulate" position="right" isSelected={queryModes.has("accumulate")}>
+          Accumulate
+        </ToggleButton>
+      </ToggleButtonGroup>
       <NumberField
         label="Vocabulary"
         value={vocabNum}
@@ -134,7 +172,7 @@ function ConstructQueryControl({
         isWheelDisabled={true}
       />
       <Button onClick={onButtonClick}>Get!</Button>
-    </>
+    </div>
   );
 }
 
