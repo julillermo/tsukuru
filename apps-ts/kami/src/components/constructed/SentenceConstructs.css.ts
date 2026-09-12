@@ -1,5 +1,12 @@
 import { style } from "@vanilla-extract/css";
 
+export const constructQueryControl = style({
+  display: "flex",
+  flexDirection: "row",
+  gap: 8,
+  alignItems: "center",
+});
+
 export const sentenceConstructs = style({
   display: "flex",
   flex: 1,
@@ -18,7 +25,6 @@ export const constructCardHeader = style({
   flex: 1,
   flexDirection: "row",
   justifyContent: "space-between",
-
   cursor: "pointer",
 });
 
