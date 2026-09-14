@@ -46,6 +46,7 @@ export function ConstructBox(props: ConstructGeneratorProps) {
     queryFn: async () => {
       const response = await fetch(
         `${API_URL}/tsukuru/constructs/random?concepts=${conceptNum}&vocabs=${vocabNum}`,
+        { method: "GET" },
       );
       return await response.json();
     },

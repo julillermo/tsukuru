@@ -19,7 +19,7 @@ function RouteComponent() {
       <div className={styles.sentenceCreationSection}>
         <SelectedConstructs selectedConstructs={selectedConstructs} />
         <div className={styles.sentenceInputGroup}>
-          <SentenceInput />
+          <SentenceInput selectedConstructs={selectedConstructs} />
         </div>
       </div>
       <div className={styles.sentenceConstructsBox}>
