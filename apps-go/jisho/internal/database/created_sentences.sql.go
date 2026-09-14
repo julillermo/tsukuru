@@ -40,3 +40,37 @@ func (q *Queries) CreateCreatedSentence(ctx context.Context, arg CreateCreatedSe
 	)
 	return i, err
 }
+
+const getAllCreatedSentences = `-- name: GetAllCreatedSentences :many
+SELECT id, created_at, updated_at, japanese_text, english_meaning FROM created_sentences
+`
+
+// TODO: when creating the getAllCreatedSentences, it has to retreive the vocab and concepts
+func (q *Queries) GetAllCreatedSentences(ctx context.Context) ([]CreatedSentence, error) {
+	rows, err := q.db.QueryContext(ctx, getAllCreatedSentences)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []CreatedSentence
+	for rows.Next() {
+		var i CreatedSentence
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.JapaneseText,
+			&i.EnglishMeaning,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

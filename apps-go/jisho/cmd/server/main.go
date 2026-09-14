@@ -68,6 +68,9 @@ func main() {
 // 		- This allows making multiple inserts for an unknown number of entries
 // 		- However, sqlc generated functions will become altered and
 // 			must all be checked / updated
+// - The API endpoints currently don't require the client to specify 'Content-Type: application/json'
+// 		Although this works because the code is set to directly decode the json body anyway,
+// 		this can be considered as non-standard / bad practice.
 // - I read that it's bad practice to return direct database information.
 // 		- Add a service layer
 // 		- Don't return the entirety of database entries or errors
