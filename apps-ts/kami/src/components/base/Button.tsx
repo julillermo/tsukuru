@@ -1,3 +1,5 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import type * as CSS from "csstype";
 import type { ReactNode } from "react";
 import {
   Button as RACButton,
@@ -9,16 +11,38 @@ import * as styles from "./Button.css";
 type TsukuruButtonProps = {
   prefix?: ReactNode;
   suffix?: ReactNode;
+
+  backgroundColor?: CSS.Property.BackgroundColor;
+  maxWidth?: `${number}px`;
+  alignSelf?: CSS.Property.AlignSelf;
 };
 
-export function Button(props: RACButtonProps & TsukuruButtonProps) {
+export function Button({
+  prefix,
+  suffix,
+
+  backgroundColor,
+  maxWidth,
+  alignSelf,
+  ...props
+}: RACButtonProps & TsukuruButtonProps) {
   return (
-    <RACButton {...props} className={styles.button}>
+    <RACButton
+      {...props}
+      className={styles.button}
+      style={{
+        ...assignInlineVars({
+          [styles.buttonMaxWidth]: maxWidth,
+          [styles.buttonAlignSelf]: alignSelf,
+          [styles.buttonBackgroundColor]: backgroundColor,
+        }),
+      }}
+    >
       {composeRenderProps(props.children, (children) => (
         <div className={styles.content}>
-          <div>{props.prefix}</div>
+          <div>{prefix}</div>
           <div>{children}</div>
-          <div>{props.suffix}</div>
+          <div>{suffix}</div>
         </div>
       ))}
     </RACButton>

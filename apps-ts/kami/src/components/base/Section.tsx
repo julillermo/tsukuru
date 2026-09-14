@@ -1,12 +1,23 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import type * as CSS from "csstype";
 import type { ReactNode } from "react";
 import * as styles from "./Section.css";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 export type SectionProps = {
   children?: ReactNode;
+  backgroundColor?: CSS.Property.BackgroundColor;
 };
-export function Section(props: SectionProps) {
-  return <div className={styles.section}>{props.children}</div>;
+export function Section({ children, backgroundColor }: SectionProps) {
+  return (
+    <div
+      className={styles.section}
+      style={{
+        ...assignInlineVars({ [styles.sectionBackgroundColor]: backgroundColor }),
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
 export type SubectionProps = {
