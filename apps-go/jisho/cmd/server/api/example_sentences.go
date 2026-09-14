@@ -18,12 +18,12 @@ import (
 
 // TODO: These endpoints likely needs to be protected
 func ExampleSentencesAPI(serveMux *http.ServeMux, api *types.APIConfig) {
-	CreateExampleSentence(serveMux, api)
-	GetExampleSentenceById(serveMux, api)
-	UpdateExampleSentencById(serveMux, api)
+	createExampleSentence(serveMux, api)
+	getExampleSentenceById(serveMux, api)
+	updateExampleSentencById(serveMux, api)
 }
 
-func CreateExampleSentence(serveMux *http.ServeMux, api *types.APIConfig) {
+func createExampleSentence(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("POST /api/example_sentences", func(writer http.ResponseWriter, request *http.Request) {
 		decoder := json.NewDecoder(request.Body)
 		defer request.Body.Close()
@@ -79,7 +79,7 @@ func CreateExampleSentence(serveMux *http.ServeMux, api *types.APIConfig) {
 	})
 }
 
-func GetExampleSentenceById(serveMux *http.ServeMux, api *types.APIConfig) {
+func getExampleSentenceById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /api/example_sentences/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		sentenceUUID, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
@@ -126,7 +126,7 @@ func GetExampleSentenceById(serveMux *http.ServeMux, api *types.APIConfig) {
 	})
 }
 
-func UpdateExampleSentencById(serveMux *http.ServeMux, api *types.APIConfig) {
+func updateExampleSentencById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("PATCH /api/example_sentences/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		sentenceId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
