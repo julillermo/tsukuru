@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"errors"
+	"log"
 	"slices"
 
+	"github.com/google/uuid"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 )
 
@@ -15,4 +18,17 @@ func IsJLPTLevel[T StringOrJLPTLevel](text T) bool {
 		[]types.JLPTLevel{"n5", "n4", "n3", "n2", "n1"},
 		types.JLPTLevel(text),
 	)
+}
+
+func ParseUUIDsFromStringList(uuidStringList []string) ([]uuid.UUID, error) {
+	uuidSlice := make([]uuid.UUID, len(uuidStringList))
+	for idx, uuidString := range uuidStringList {
+		UUID, err := uuid.Parse(uuidString)
+		if err != nil {
+			log.Print(err)
+			return nil, errors.New("received invalid UUID string")
+		}
+		uuidSlice[idx] = UUID
+	}
+	return uuidSlice, nil
 }

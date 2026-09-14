@@ -52,7 +52,6 @@ type GrammarConceptWithExampleSetenceJoin struct {
 }
 
 type ResGetRandomGrammarConcept struct {
-	GrammarConceptDbEntryDetails
 	GrammarConceptDbEntry
 	Examples []ExampleSentenceDbEntry `json:"examples"`
 }

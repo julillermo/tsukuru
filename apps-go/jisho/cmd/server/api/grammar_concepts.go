@@ -18,12 +18,12 @@ import (
 
 // TODO: These endpoints likely needs to be protected
 func GrammarConceptsAPI(serveMux *http.ServeMux, api *types.APIConfig) {
-	CreateGrammarConcept(serveMux, api)
-	GetGrammarConceptById(serveMux, api)
-	UpdateGrammarConceptById(serveMux, api)
+	createGrammarConcept(serveMux, api)
+	getGrammarConceptById(serveMux, api)
+	updateGrammarConceptById(serveMux, api)
 }
 
-func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
+func createGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("POST /api/grammar_concepts", func(writer http.ResponseWriter, request *http.Request) {
 		decoder := json.NewDecoder(request.Body)
 		defer request.Body.Close()
@@ -72,7 +72,7 @@ func CreateGrammarConcept(serveMux *http.ServeMux, api *types.APIConfig) {
 // TODO: think of way to also retrieve example sentences through grammar concept
 // - Either find a way to conditionally allow retrieving the example sentence alongside this query
 // - Or, Create a dedicated query that does include the example sentences
-func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
+func getGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /api/grammar_concepts/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		conceptId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
@@ -127,7 +127,7 @@ func GetGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 	})
 }
 
-func UpdateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
+func updateGrammarConceptById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("PATCH /api/grammar_concepts/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		conceptId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {

@@ -12,11 +12,11 @@ import (
 )
 
 // TODO: These endpoints likely needs to be protected
-func RandomizationAPI(serveMux *http.ServeMux, api *types.APIConfig) {
-	GetRandomSentenceConstructs(serveMux, api)
+func ConstructsAPI(serveMux *http.ServeMux, api *types.APIConfig) {
+	getRandomSentenceConstructs(serveMux, api)
 }
 
-func GetRandomSentenceConstructs(serveMux *http.ServeMux, api *types.APIConfig) {
+func getRandomSentenceConstructs(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /tsukuru/constructs/random", func(writer http.ResponseWriter, request *http.Request) {
 		vocabNumParam := request.URL.Query().Get("vocabs")
 		conceptNumParam := request.URL.Query().Get("concepts")

@@ -9,14 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
 import { Route as AboutRouteImport } from "./routes/about";
 import { Route as AttributionRouteImport } from "./routes/attribution";
 import { Route as BookmarksRouteImport } from "./routes/bookmarks";
+import { Route as FolderFileRouteImport } from "./routes/folder/file";
 import { Route as HistoryRouteImport } from "./routes/history";
+import { Route as IndexRouteImport } from "./routes/index";
 import { Route as ReferenceRouteImport } from "./routes/reference";
 import { Route as SentencePracticeRouteImport } from "./routes/sentence-practice";
-import { Route as FolderFileRouteImport } from "./routes/folder/file";
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
