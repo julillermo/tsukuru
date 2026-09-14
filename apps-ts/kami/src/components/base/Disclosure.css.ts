@@ -8,6 +8,7 @@ export const disclosure = style({
 
 export const heading = style({
   display: "flex",
+  flex: 1,
   flexDirection: "row",
   alignItems: "center",
   margin: 0,
