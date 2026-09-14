@@ -57,6 +57,30 @@ func (ns NullJlptLevelEnum) Value() (driver.Value, error) {
 	return string(ns.JlptLevelEnum), nil
 }
 
+type CreatedSentence struct {
+	ID             uuid.UUID
+	CreatedAt      sql.NullTime
+	UpdatedAt      sql.NullTime
+	JapaneseText   sql.NullString
+	EnglishMeaning sql.NullString
+}
+
+type CreatedSentencesGrammarConcept struct {
+	ID                uuid.UUID
+	CreatedAt         sql.NullTime
+	UpdatedAt         sql.NullTime
+	CreatedSentenceID uuid.NullUUID
+	GrammarConceptID  uuid.NullUUID
+}
+
+type CreatedSentencesVocabulary struct {
+	ID                uuid.UUID
+	CreatedAt         sql.NullTime
+	UpdatedAt         sql.NullTime
+	CreatedSentenceID uuid.NullUUID
+	VocabularyID      uuid.NullUUID
+}
+
 type ExampleSentence struct {
 	ID               uuid.UUID
 	CreatedAt        sql.NullTime

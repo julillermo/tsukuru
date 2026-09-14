@@ -47,7 +47,8 @@ func main() {
 	api.GrammarConceptsAPI(serveMux, jishoAPI)  // /api/grammar_concepts
 	api.ExampleSentencesAPI(serveMux, jishoAPI) // /api/example_sentences
 
-	service.RandomizationAPI(serveMux, jishoAPI) // /tsukuru
+	service.ConstructsAPI(serveMux, jishoAPI)            // /tsukuru/constructs
+	service.CreatedSentences(serveMux, jishoAPI, dbConn) // /tsukuru/created_sentences
 
 	fmt.Printf("Running Jisho Server on port %s\n", jishoServer.Addr)
 	log.Fatal(jishoServer.ListenAndServe())
@@ -61,6 +62,12 @@ func main() {
 // - Weigh in on whether the repeated API code should be generalized/abstracted
 // - Double check whether or not I can just stick with `validate:"required"` instead of
 // 		also having ptrs to make optional payload entries
+// 		- It seems that I can create `type funcionNameOptions struct {}` then use as a
+// 			final function argument for all of the optional function inputs
+// - Eventually include `pgx` so I can use :copyfrom with sqlc.
+// 		- This allows making multiple inserts for an unknown number of entries
+// 		- However, sqlc generated functions will become altered and
+// 			must all be checked / updated
 // - I read that it's bad practice to return direct database information.
 // 		- Add a service layer
 // 		- Don't return the entirety of database entries or errors

@@ -64,10 +64,11 @@ func CommitGrammarConceptsToDB(
 		log.Fatal(err)
 	}
 	defer tx.Rollback()
+	queries := api.DBQueries.WithTx(tx)
 
 	conceptInsertCount = 0
 	for _, concept := range jlptGrammarConcepts {
-		conceptRes, err := api.DBQueries.CreateGrammarConcept(ctx, database.CreateGrammarConceptParams{
+		conceptRes, err := queries.CreateGrammarConcept(ctx, database.CreateGrammarConceptParams{
 			JlptLevel: database.NullJlptLevelEnum{
 				JlptLevelEnum: database.JlptLevelEnum(concept.JLPTLevel),
 				Valid:         utils.IsJLPTLevel(concept.JLPTLevel),
@@ -86,7 +87,7 @@ func CommitGrammarConceptsToDB(
 		} else {
 			conceptInsertCount += 1
 			for _, example := range concept.Examples {
-				_, err := api.DBQueries.CreateExampleSentence(ctx, database.CreateExampleSentenceParams{
+				_, err := queries.CreateExampleSentence(ctx, database.CreateExampleSentenceParams{
 					GrammarConceptID: uuid.NullUUID{
 						UUID:  conceptRes.ID,
 						Valid: true,

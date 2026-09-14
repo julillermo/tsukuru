@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"time"
-
 	db "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
@@ -106,10 +104,6 @@ func ConvertGrammarConceptsRowDBtoAPI(
 
 		if !conceptAlreadyIncluded {
 			grammarConceptsAPI = append(grammarConceptsAPI, apiType.ResGetRandomGrammarConcept{
-				GrammarConceptDbEntryDetails: apiType.GrammarConceptDbEntryDetails{
-					CreatedAt: gConcept.CreatedAt.Time.Format(time.RFC3339),
-					UpdatedAt: gConcept.UpdatedAt.Time.Format(time.RFC3339),
-				},
 				GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
 					Id:         gConcept.ID.String(),
 					JLPTLevel:  types.JLPTLevel(gConcept.JlptLevel.JlptLevelEnum),

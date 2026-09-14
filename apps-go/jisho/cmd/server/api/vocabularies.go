@@ -18,12 +18,12 @@ import (
 
 // TODO: These endpoints likely needs to be protected
 func VocabulariesAPI(serveMux *http.ServeMux, api *types.APIConfig) {
-	CreateVocabulary(serveMux, api)
-	GetVocabularyByID(serveMux, api)    // /{id}
-	UpdateVocabularyById(serveMux, api) // /{id}
+	createVocabulary(serveMux, api)
+	getVocabularyByID(serveMux, api)    // /{id}
+	updateVocabularyById(serveMux, api) // /{id}
 }
 
-func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
+func createVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("POST /api/vocabularies", func(writer http.ResponseWriter, request *http.Request) {
 		decoder := json.NewDecoder(request.Body)
 		defer request.Body.Close()
@@ -81,7 +81,7 @@ func CreateVocabulary(serveMux *http.ServeMux, api *types.APIConfig) {
 	})
 }
 
-func GetVocabularyByID(serveMux *http.ServeMux, api *types.APIConfig) {
+func getVocabularyByID(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("GET /api/vocabularies/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		vocabId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
@@ -122,7 +122,7 @@ func GetVocabularyByID(serveMux *http.ServeMux, api *types.APIConfig) {
 	})
 }
 
-func UpdateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
+func updateVocabularyById(serveMux *http.ServeMux, api *types.APIConfig) {
 	serveMux.HandleFunc("PATCH /api/vocabularies/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		vocabId, err := uuid.Parse(request.PathValue("id"))
 		if err != nil {
