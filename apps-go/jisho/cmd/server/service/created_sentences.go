@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -16,6 +17,7 @@ import (
 
 func CreatedSentences(serveMux *http.ServeMux, api *types.APIConfig, dbConn *sql.DB) {
 	createSentence(serveMux, api, dbConn)
+	getAllCreatedSentences(serveMux, api)
 }
 
 func createSentence(serveMux *http.ServeMux, api *types.APIConfig, dbConn *sql.DB) {
@@ -108,4 +110,22 @@ func createSentence(serveMux *http.ServeMux, api *types.APIConfig, dbConn *sql.D
 			},
 		})
 	})
+}
+
+func getAllCreatedSentences(serveMux *http.ServeMux, api *types.APIConfig) {
+	serveMux.HandleFunc("GET /tsukuru/sentences", func(writer http.ResponseWriter, request *http.Request) {
+		createdSentencesRes, err := api.DBQueries.GetAllCreatedSentences(request.Context())
+		if err != nil {
+			log.Print(err)
+			_ = utils.RespondWithError(writer, http.StatusInternalServerError,
+				fmt.Sprintf("could not retrieve created sentences"),
+			)
+			return
+		}
+
+		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResGetAllCreatedSentences{
+			CreatedSentences: utils.ConvertCreatedSentencesDBToAPI(createdSentencesRes),
+		})
+	})
+
 }

@@ -121,3 +121,17 @@ func ConvertGrammarConceptsRowDBtoAPI(
 
 	return grammarConceptsAPI
 }
+
+func ConvertCreatedSentencesDBToAPI(
+	createdSentencesDb []db.CreatedSentence,
+) (createdSentencesAPI []apiType.CreatedSentenceDbEntry) {
+	for idx := range createdSentencesDb {
+		createdSentencesAPI = append(createdSentencesAPI,
+			apiType.CreatedSentenceDbEntry{
+				Id:             createdSentencesDb[idx].ID.String(),
+				JapaneseText:   createdSentencesDb[idx].JapaneseText.String,
+				EnglishMeaning: createdSentencesDb[idx].EnglishMeaning.String,
+			})
+	}
+	return createdSentencesAPI
+}
