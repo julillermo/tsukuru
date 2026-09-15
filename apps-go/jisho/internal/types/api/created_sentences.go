@@ -22,5 +22,5 @@ type ResCreateSentence struct {
 }
 
 type ResGetAllCreatedSentences struct {
-	CreatedSentences []CreatedSentenceDbEntry `json:"sentences"`
+	CreatedSentences []ResCreateSentence `json:"sentences"`
 }
