@@ -26,7 +26,7 @@ const RootLayout = () => (
         <div id="navigation" className={styles.navigationLayout}>
           <Link to="/">Tsukuru</Link>
           <Link to="/sentence-practice">Sentence Practice</Link>
-          {/*<Link to="/history">History</Link>*/}
+          <Link to="/history">History</Link>
           {/*<Link to="/bookmarks">Bookmarks</Link>*/}
           {/*<Link to="/reference">Reference</Link>*/}
         </div>
