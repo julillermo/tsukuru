@@ -124,7 +124,7 @@ func getAllCreatedSentences(serveMux *http.ServeMux, api *types.APIConfig) {
 		}
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResGetAllCreatedSentences{
-			CreatedSentences: utils.ConvertCreatedSentencesDBToAPI(createdSentencesRes),
+			CreatedSentences: utils.ConvertCreatedSentencesDBToAPI(createdSentencesRes, "Descending"),
 		})
 	})
 

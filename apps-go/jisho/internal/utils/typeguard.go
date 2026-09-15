@@ -20,6 +20,17 @@ func IsJLPTLevel[T StringOrJLPTLevel](text T) bool {
 	)
 }
 
+type StringOrSorting interface {
+	string | types.Sorting
+}
+
+func IsSorting[T StringOrSorting](text T) bool {
+	return slices.Contains(
+		[]types.Sorting{"Ascending", "Descending"},
+		types.Sorting(text),
+	)
+}
+
 func ParseUUIDsFromStringList(uuidStringList []string) ([]uuid.UUID, error) {
 	uuidSlice := make([]uuid.UUID, len(uuidStringList))
 	for idx, uuidString := range uuidStringList {

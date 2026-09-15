@@ -10,6 +10,9 @@ import "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
 // ["n5", "n4", "n3", "n2", "n1"]
 type JLPTLevel string
 
+// ["Ascending", "Descending"]
+type Sorting string
+
 // APIConfig holds dependencies and state shared by HTTP handlers
 type APIConfig struct {
 	DBQueries *database.Queries

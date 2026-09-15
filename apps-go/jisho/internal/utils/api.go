@@ -1,6 +1,10 @@
 package utils
 
 import (
+	"log"
+	"sort"
+	"time"
+
 	db "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
@@ -124,14 +128,51 @@ func ConvertGrammarConceptsRowDBtoAPI(
 
 func ConvertCreatedSentencesDBToAPI(
 	createdSentencesDb []db.CreatedSentence,
-) (createdSentencesAPI []apiType.CreatedSentenceDbEntry) {
+	sorting types.Sorting, // "Ascending" | "Descending"
+) (createdSentencesAPI []apiType.ResCreateSentence) {
+	if !IsSorting(sorting) {
+		log.Print("value for sorting is invalid and not of type Sorting")
+		return createdSentencesAPI
+	}
+
 	for idx := range createdSentencesDb {
 		createdSentencesAPI = append(createdSentencesAPI,
-			apiType.CreatedSentenceDbEntry{
-				Id:             createdSentencesDb[idx].ID.String(),
-				JapaneseText:   createdSentencesDb[idx].JapaneseText.String,
-				EnglishMeaning: createdSentencesDb[idx].EnglishMeaning.String,
+			apiType.ResCreateSentence{
+				CreatedSentencDbEntryDetails: apiType.CreatedSentencDbEntryDetails{
+					CreatedAt: createdSentencesDb[idx].CreatedAt.Time.Format(time.RFC3339),
+					UpdatedAt: createdSentencesDb[idx].UpdatedAt.Time.Format(time.RFC3339),
+				},
+				CreatedSentenceDbEntry: apiType.CreatedSentenceDbEntry{
+					Id:             createdSentencesDb[idx].ID.String(),
+					JapaneseText:   createdSentencesDb[idx].JapaneseText.String,
+					EnglishMeaning: createdSentencesDb[idx].EnglishMeaning.String,
+				},
 			})
 	}
+
+	sort.Slice(createdSentencesAPI, func(aIdx, bIdx int) bool {
+		aUpdatedAt, err := time.Parse(time.RFC3339, createdSentencesAPI[aIdx].UpdatedAt)
+		if err != nil {
+			log.Print(err)
+			log.Print("unable to parse created sentence updated at time")
+			return false
+		}
+		bUpdatedAt, err := time.Parse(time.RFC3339, createdSentencesAPI[bIdx].UpdatedAt)
+		if err != nil {
+			log.Print(err)
+			log.Print("unable to parse created sentence updated at time")
+			return false
+		}
+
+		switch sorting {
+		case "Ascending":
+			return aUpdatedAt.Before(bUpdatedAt)
+		case "Descending":
+			return aUpdatedAt.After(bUpdatedAt)
+		default:
+			return aUpdatedAt.After(bUpdatedAt)
+		}
+	})
+
 	return createdSentencesAPI
 }
