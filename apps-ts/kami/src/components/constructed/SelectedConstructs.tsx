@@ -57,8 +57,8 @@ export function SelectedConstructs({ selectedConstructs }: SelectedConstructsPro
         </div>
       </Section>
       <Text className={styles.selectedConstructsDescription}>
-        Selected constructs are recorded as part of constructed sentence (regardless of whether they
-        were used).
+        Selected constructs are recorded as part of the sentence (regardless of whether they were
+        used). <i>These will be visible in the /history page updates!</i>
       </Text>
     </div>
   );
