@@ -8,3 +8,5 @@ apps-uv/kezuru/output/
 **/bin/
 
 !data/*
+
+**/node_modules/

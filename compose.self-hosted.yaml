@@ -42,10 +42,34 @@ services:
       REPO_ROOT: /tsukuru/apps-go/jisho
       DB_URL: postgres://app_user:app_password@postgresql:5432/app_db?sslmode=disable
     ports:
-      - "8081:8081"
+      - "7251:8081"
     depends_on:
       feed:
         condition: service_completed_successfully
+    restart: unless-stopped
+
+  kami-build:
+    build:
+      context: .
+      dockerfile: Dockerfile.self-hosted
+      target: kami-build
+    depends_on:
+      jisho:
+        condition: service_started
+    restart: "no"
+
+  kami-runtime:
+    build:
+      context: .
+      dockerfile: Dockerfile.self-hosted
+      target: kami-runtime
+    ports:
+      - "7252:80"
+    depends_on:
+      kami-build:
+        condition: service_completed_successfully
+      jisho:
+        condition: service_started
     restart: unless-stopped
 
 volumes:

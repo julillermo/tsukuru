@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
       vanillaExtractPlugin(),
     ],
     server: {
-      port: mode != "prod" ? 5173 : Number(env.VITE_PROD_CLIENT_PORT),
+      port: mode != "production" ? 5173 : Number(env.VITE_PROD_CLIENT_PORT),
     },
   };
 });

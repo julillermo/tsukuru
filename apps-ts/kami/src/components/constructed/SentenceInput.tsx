@@ -44,7 +44,7 @@ export function SentenceInput(props: SentenceInputProps) {
       // TODO: Revisit this. This should correspond with the /history page
       // The history page will eventually query to load all past created_sentences entries
       await queryClient.invalidateQueries({
-        queryKey: ["createdSentences"],
+        queryKey: ["createdSentencesHistory"],
       });
     },
   });
@@ -56,13 +56,13 @@ export function SentenceInput(props: SentenceInputProps) {
           value={japaneseSentence}
           onChange={setJapaneseSentence}
           label="Constructed Japanese sentence:"
-          description="Create a sentence from the selected constructs into the above field."
+          description="Create a sentence using the selected constructs above."
         />
         <TextArea
           value={englishMeaning}
           onChange={setEnglishMeaning}
           label="Intended English meaning:"
-          description="Give your best english translation of the japanese sentence you just constructed."
+          description="Give your best english translation of the japanese sentence you just created."
         />
       </div>
       <Button

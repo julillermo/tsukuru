@@ -34,8 +34,12 @@ export function ConstructBox(props: ConstructGeneratorProps) {
 
   // TODO: Eventually add zod for data validation
   //    This means that I could also just use zod's infer instead of duplicating types
-  // TODO: It also seems that I don't need the created_at and updated_at from get random API
-  // TODO: Eventually add a toggle to hide selected contructs
+  // TODO: Eventually add a toggle to hide selected constructs
+  // TODO: Consider retaining the following when returning from a different page:
+  //    (1) queried constructs
+  //    (2) selected constructs
+  //    (3) draft japanese sentence
+  //    (4) draft english meaning
 
   const {
     data: constructsData,
