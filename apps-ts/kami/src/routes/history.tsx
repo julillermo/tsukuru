@@ -36,8 +36,7 @@ function RouteComponent() {
   return (
     <div className={styles.layout}>
       <div className={styles.sentencesContainer}>
-        {/* TODO: this undefined/null check is a little wierd.
-              Address it in the future */}
+        {/* TODO: this undefined/null check is a little wierd. Address it in the future */}
         {createdSentences != undefined &&
           createdSentences.map((sentence: selectedQueryData) => (
             <Card key={sentence.id} backgroundColor="#c6e4e6" outlineColor="inherit">

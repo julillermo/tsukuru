@@ -41,8 +41,6 @@ export function SentenceInput(props: SentenceInputProps) {
       return body ? JSON.parse(body) : null;
     },
     onSuccess: async (_data) => {
-      // TODO: Revisit this. This should correspond with the /history page
-      // The history page will eventually query to load all past created_sentences entries
       await queryClient.invalidateQueries({
         queryKey: ["createdSentencesHistory"],
       });
