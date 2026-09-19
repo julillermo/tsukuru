@@ -1,4 +1,4 @@
-import { API_URL } from "@/constants";
+import { getSentenceMutation } from "@/queries/createdSentences";
 import type { SentenceConstruct } from "@/types/client/constructs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -14,40 +14,15 @@ export function SentenceInput(props: SentenceInputProps) {
   const [japaneseSentence, setJapaneseSentence] = useState<string>();
   const [englishMeaning, setEnglishMeaning] = useState<string>();
 
-  const postSentenceMutation = useMutation({
-    mutationFn: async () => {
-      // TODO: revisit how error handling is done with fetch()
-      // Also checkout the useQuery in /sentence-practice
-      const response = await fetch(`${API_URL}/tsukuru/sentences`, {
-        method: "POST",
-        body: JSON.stringify({
-          japanese_text: japaneseSentence,
-          english_meaning: englishMeaning,
-          vocabulary_ids: props.selectedConstructs
-            .filter((con) => con.type === "vocabulary")
-            .map((con) => con.id),
-          grammar_concept_ids: props.selectedConstructs
-            .filter((con) => con.type === "grammar_concept")
-            .map((con) => con.id),
-        }),
-      });
-
-      const body = await response.text();
-
-      if (!response.ok) {
-        throw new Error(`POST failed (${response.status}):\n ${body}`);
-      }
-
-      return body ? JSON.parse(body) : null;
-    },
-    onSuccess: async (_data) => {
-      // TODO: Revisit this. This should correspond with the /history page
-      // The history page will eventually query to load all past created_sentences entries
-      await queryClient.invalidateQueries({
-        queryKey: ["createdSentencesHistory"],
-      });
-    },
-  });
+  // TODO: Double check logic on preventing submission when inputs are undefined
+  const postSentenceMutation = useMutation(
+    getSentenceMutation({
+      japaneseSentence,
+      englishMeaning,
+      selectedConstructs: props.selectedConstructs,
+      queryClient,
+    }),
+  );
 
   return (
     <div className={styles.sentenceInputContainer}>

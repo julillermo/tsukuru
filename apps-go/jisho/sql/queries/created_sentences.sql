@@ -10,6 +10,6 @@ VALUES(
 )
 RETURNING *;
 
--- TODO: when creating the getAllCreatedSentences, it has to retreive the vocab and concepts
+-- TODO: when retrieving the getAllCreatedSentences, it has to retreive the vocab and concepts
 -- name: GetAllCreatedSentences :many
 SELECT * FROM created_sentences;

@@ -1,4 +1,4 @@
-import { API_URL } from "@/constants";
+import { getRandomConstructsQuery } from "@/queries/randomConstructs";
 import type { ExampleSentence } from "@/types/api/constructs";
 import {
   isGrammarConceptClient,
@@ -32,8 +32,6 @@ export function ConstructBox(props: ConstructGeneratorProps) {
   const [conceptNum, setConceptNum] = useState<number>(0);
   const [queryModes, setQueryModes] = useState(new Set<Key>(["accumulate"])); // "accumulate" | "refresh"
 
-  // TODO: Eventually add zod for data validation
-  //    This means that I could also just use zod's infer instead of duplicating types
   // TODO: Eventually add a toggle to hide selected constructs
   // TODO: Consider retaining the following when returning from a different page:
   //    (1) queried constructs
@@ -45,17 +43,7 @@ export function ConstructBox(props: ConstructGeneratorProps) {
     data: constructsData,
     refetch: constructsRefetch,
     isFetched: constructsIsFetched,
-  } = useQuery({
-    queryKey: ["randomConstructs"],
-    queryFn: async () => {
-      const response = await fetch(
-        `${API_URL}/tsukuru/constructs/random?concepts=${conceptNum}&vocabs=${vocabNum}`,
-        { method: "GET" },
-      );
-      return await response.json();
-    },
-    enabled: false,
-  });
+  } = useQuery(getRandomConstructsQuery({ conceptNum, vocabNum }));
 
   const handleConstructSelect = (constructId: string) => {
     props.setConstructs((prevConstructs) =>
