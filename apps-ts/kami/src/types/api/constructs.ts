@@ -1,13 +1,30 @@
 export type JLPTLevel = "n5" | "n4";
 
+export type VocabularyClassification =
+  | "noun"
+  | "pronoun"
+  | "type I verb"
+  | "type II verb"
+  | "type III verb"
+  | "adjective"
+  | "adjectival noun"
+  | "adverb"
+  | "attribute"
+  | "conjunction"
+  | "interjection"
+  | "auxiliary"
+  | "particle"
+  | "prefix"
+  | "suffix"
+  | "compound";
+
 export type VocabularyApi = {
   id: string;
   jlpt_level: JLPTLevel;
   wiki_index: number;
   kana_writing: string;
   kanji: string;
-  // TODO: Be more specific on possible classification options later on. Can be determined from Jisho backend
-  classification: string[];
+  classification: VocabularyClassification;
   definition: string;
 };
 

@@ -56,6 +56,8 @@ CJKWordClassKanjiType = Literal[
     "尾",  # suffix
     "連",  # compound
 ]
+
+# Make sure this is aligned with the Kami equivalent type
 EnglishWordClassType = Literal[
     "noun",
     "pronoun",
