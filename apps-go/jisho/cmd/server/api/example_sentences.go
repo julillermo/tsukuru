@@ -145,22 +145,10 @@ func updateExampleSentencById(serveMux *http.ServeMux, api *types.APIConfig) {
 			return
 		}
 
-		// TODO: this could possibly become its own utility function
-		// Might not need it depending on whether I figure out whether *ptr approach
-		// 	is necessary for optional payload parameters
-		var grammarConceptID uuid.NullUUID
-		if reqJSON.GrammarConceptId != nil {
-			parsedID, err := uuid.Parse(*reqJSON.GrammarConceptId)
-			if err != nil {
-				log.Print(err)
-				_ = utils.RespondWithError(writer, http.StatusBadRequest, "failed to parse grammar concept UUID")
-				return
-			}
-			grammarConceptID = uuid.NullUUID{
-				UUID:  parsedID,
-				Valid: true,
-			}
-		}
+		grammarConceptId := utils.ParseAPIReqUUIDString(utils.ParseAPIReqUUIDStringProps{
+			UUIDString: *reqJSON.GrammarConceptId,
+			Writer:     writer,
+		})
 
 		sentenceRes, err := api.DBQueries.UpdateExampleSentenceById(request.Context(), db.UpdateExampleSentenceByIdParams{
 			ID: sentenceId,
@@ -172,7 +160,10 @@ func updateExampleSentencById(serveMux *http.ServeMux, api *types.APIConfig) {
 				String: utils.GetOptStringInput(reqJSON.EnglishMeaning),
 				Valid:  utils.ValidateOptStringInput(reqJSON.EnglishMeaning),
 			},
-			GrammarConceptID: grammarConceptID,
+			GrammarConceptID: uuid.NullUUID{
+				UUID:  grammarConceptId,
+				Valid: true,
+			},
 		})
 
 		_ = utils.RespondWithJSON(writer, http.StatusOK, apiType.ResUpdateExampleSentenceById{

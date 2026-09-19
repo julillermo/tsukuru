@@ -52,26 +52,6 @@ func ReadAndCombineVocab(
 	return vocabDbEntries
 }
 
-// TODO: Move this to utils
-func ConvertVocabularyJSONtoDB(
-	vocabularies []importerType.VocabularyJSON,
-	level types.JLPTLevel,
-) (
-	vocabulariesDb []apiType.VocabularyDbEntry,
-) {
-	for idx := range vocabularies {
-		vocabulariesDb = append(vocabulariesDb, apiType.VocabularyDbEntry{
-			JLPTLevel:      level,
-			WikiIndex:      vocabularies[idx].WikiIndex,
-			Kana:           vocabularies[idx].Kana,
-			Kanji:          vocabularies[idx].Kanji,
-			Classification: vocabularies[idx].Classification,
-			Definition:     vocabularies[idx].Definition,
-		})
-	}
-	return vocabulariesDb
-}
-
 func CommitVocabulariesToDB(
 	jlptVocabularies []apiType.VocabularyDbEntry,
 	dbConn *sql.DB,

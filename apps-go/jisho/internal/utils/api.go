@@ -2,12 +2,10 @@ package utils
 
 import (
 	"log"
-	"sort"
-	"time"
+	"net/http"
+	"strconv"
 
-	db "github.com/julillermo/tsukuru/apps-go/jisho/internal/database"
-	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
-	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
+	"github.com/google/uuid"
 )
 
 func GetOptInt32Input(value *int) int32 {
@@ -40,139 +38,31 @@ func GetOptSliceInput[T any](value *[]T) []T {
 	}
 }
 
-func ConvertExampleSetenceSliceDBToAPI(
-	exampleSentencesDb []db.ExampleSentence,
-) (exampleSentencesApi []apiType.ExampleSentenceDbEntry) {
-	for idx := range exampleSentencesDb {
-		exampleSentencesApi = append(exampleSentencesApi,
-			apiType.ExampleSentenceDbEntry{
-				Id:               exampleSentencesDb[idx].ID.String(),
-				GrammarConceptId: exampleSentencesDb[idx].GrammarConceptID.UUID.String(),
-				JapaneseText:     exampleSentencesDb[idx].JapaneseText.String,
-				EnglishMeaning:   exampleSentencesDb[idx].EnglishMeaning.String,
-			},
-		)
-	}
-	return exampleSentencesApi
+type ParseAPIReqUUIDStringProps struct {
+	UUIDString string
+	Writer     http.ResponseWriter
 }
 
-func ConvertVocabularySliceDBtoAPI(
-	vocabulariesDb []db.Vocabulary,
-) (vocabulariesAPI []apiType.VocabularyDbEntry) {
-	for idx := range vocabulariesDb {
-		vocabulariesAPI = append(vocabulariesAPI,
-			apiType.VocabularyDbEntry{
-				Id:             vocabulariesDb[idx].ID.String(),
-				JLPTLevel:      types.JLPTLevel(vocabulariesDb[idx].JlptLevel.JlptLevelEnum),
-				WikiIndex:      int(vocabulariesDb[idx].WikiIndex.Int32),
-				Kana:           vocabulariesDb[idx].Kana.String,
-				Kanji:          vocabulariesDb[idx].Kanji.String,
-				Classification: vocabulariesDb[idx].Classification,
-				Definition:     vocabulariesDb[idx].Definition.String,
-			})
+func ParseAPIReqUUIDString(props ParseAPIReqUUIDStringProps) uuid.UUID {
+	parsedID, err := uuid.Parse(props.UUIDString)
+	if err != nil {
+		log.Print(err)
+		_ = RespondWithError(props.Writer, http.StatusBadRequest, "failed to parse grammar concept UUID")
 	}
-	return vocabulariesAPI
+	return parsedID
 }
 
-func ConvertGrammarConceptsSliceDBtoAPI(
-	grammarConceptsDb []db.GrammarConcept,
-) (grammarConceptsAPI []apiType.GrammarConceptDbEntry) {
-	for idx := range grammarConceptsDb {
-		grammarConceptsAPI = append(grammarConceptsAPI,
-			apiType.GrammarConceptDbEntry{
-				Id:         grammarConceptsDb[idx].ID.String(),
-				JLPTLevel:  types.JLPTLevel(grammarConceptsDb[idx].JlptLevel.JlptLevelEnum),
-				Concept:    grammarConceptsDb[idx].Concept.String,
-				Definition: grammarConceptsDb[idx].Definition.String,
-			})
-	}
-	return grammarConceptsAPI
+type ParseAPIReqIntProps struct {
+	NumString    string
+	Writer       http.ResponseWriter
+	ErrorMessage string
 }
 
-func ConvertGrammarConceptsRowDBtoAPI(
-	grammarConceptsDb []db.GetRandomGrammarConceptsRow,
-) (grammarConceptsAPI []apiType.ResGetRandomGrammarConcept) {
-	for _, gConcept := range grammarConceptsDb {
-		conceptAlreadyIncluded := false
-		for gcApiIdx, includedConcepts := range grammarConceptsAPI {
-			if gConcept.ID.String() == includedConcepts.Id {
-				conceptAlreadyIncluded = true
-				grammarConceptsAPI[gcApiIdx].Examples = append(includedConcepts.Examples,
-					apiType.ExampleSentenceDbEntry{
-						Id:             gConcept.ExampleSentenceID.UUID.String(),
-						JapaneseText:   gConcept.ExampleSentenceJapaneseText.String,
-						EnglishMeaning: gConcept.ExampleSentenceEnglishText.String,
-					})
-			}
-		}
-
-		if !conceptAlreadyIncluded {
-			grammarConceptsAPI = append(grammarConceptsAPI, apiType.ResGetRandomGrammarConcept{
-				GrammarConceptDbEntry: apiType.GrammarConceptDbEntry{
-					Id:         gConcept.ID.String(),
-					JLPTLevel:  types.JLPTLevel(gConcept.JlptLevel.JlptLevelEnum),
-					Concept:    gConcept.Concept.String,
-					Definition: gConcept.Definition.String,
-				},
-				Examples: []apiType.ExampleSentenceDbEntry{{
-					Id:             gConcept.ExampleSentenceID.UUID.String(),
-					JapaneseText:   gConcept.ExampleSentenceJapaneseText.String,
-					EnglishMeaning: gConcept.ExampleSentenceEnglishText.String,
-				}},
-			})
-		}
+func ParseAPIReqInt(props ParseAPIReqIntProps) int32 {
+	value, err := strconv.ParseInt(props.NumString, 10, 32)
+	if err != nil {
+		log.Print(err)
+		_ = RespondWithError(props.Writer, http.StatusBadRequest, props.ErrorMessage)
 	}
-
-	return grammarConceptsAPI
-}
-
-func ConvertCreatedSentencesDBToAPI(
-	createdSentencesDb []db.CreatedSentence,
-	sorting types.Sorting, // "Ascending" | "Descending"
-) (createdSentencesAPI []apiType.ResCreateSentence) {
-	if !IsSorting(sorting) {
-		log.Print("value for sorting is invalid and not of type Sorting")
-		return createdSentencesAPI
-	}
-
-	for idx := range createdSentencesDb {
-		createdSentencesAPI = append(createdSentencesAPI,
-			apiType.ResCreateSentence{
-				CreatedSentencDbEntryDetails: apiType.CreatedSentencDbEntryDetails{
-					CreatedAt: createdSentencesDb[idx].CreatedAt.Time.Format(time.RFC3339),
-					UpdatedAt: createdSentencesDb[idx].UpdatedAt.Time.Format(time.RFC3339),
-				},
-				CreatedSentenceDbEntry: apiType.CreatedSentenceDbEntry{
-					Id:             createdSentencesDb[idx].ID.String(),
-					JapaneseText:   createdSentencesDb[idx].JapaneseText.String,
-					EnglishMeaning: createdSentencesDb[idx].EnglishMeaning.String,
-				},
-			})
-	}
-
-	sort.Slice(createdSentencesAPI, func(aIdx, bIdx int) bool {
-		aUpdatedAt, err := time.Parse(time.RFC3339, createdSentencesAPI[aIdx].UpdatedAt)
-		if err != nil {
-			log.Print(err)
-			log.Print("unable to parse created sentence updated at time")
-			return false
-		}
-		bUpdatedAt, err := time.Parse(time.RFC3339, createdSentencesAPI[bIdx].UpdatedAt)
-		if err != nil {
-			log.Print(err)
-			log.Print("unable to parse created sentence updated at time")
-			return false
-		}
-
-		switch sorting {
-		case "Ascending":
-			return aUpdatedAt.Before(bUpdatedAt)
-		case "Descending":
-			return aUpdatedAt.After(bUpdatedAt)
-		default:
-			return aUpdatedAt.After(bUpdatedAt)
-		}
-	})
-
-	return createdSentencesAPI
+	return int32(value)
 }

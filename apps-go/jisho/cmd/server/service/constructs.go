@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/julillermo/tsukuru/apps-go/jisho/internal/types"
 	apiType "github.com/julillermo/tsukuru/apps-go/jisho/internal/types/api"
@@ -21,37 +20,16 @@ func getRandomSentenceConstructs(serveMux *http.ServeMux, api *types.APIConfig) 
 		vocabNumParam := request.URL.Query().Get("vocabs")
 		conceptNumParam := request.URL.Query().Get("concepts")
 
-		// TODO: This feels like it could be a utility
-		var vocabNum int32
-		if len(vocabNumParam) <= 0 {
-			vocabNum = 1
-		} else {
-			value, err := strconv.ParseInt(vocabNumParam, 10, 32)
-			if err != nil {
-				log.Print(err)
-				_ = utils.RespondWithError(writer, http.StatusBadRequest,
-					fmt.Sprintf("invalid vocab parameter: %s", vocabNumParam),
-				)
-				return
-			}
-			vocabNum = int32(value)
-		}
-
-		// TODO: This feels like it could be a utility
-		var conceptNum int32
-		if len(conceptNumParam) <= 0 {
-			conceptNum = 1
-		} else {
-			value, err := strconv.ParseInt(conceptNumParam, 10, 32)
-			if err != nil {
-				log.Print(err)
-				_ = utils.RespondWithError(writer, http.StatusBadRequest,
-					fmt.Sprintf("invalid concept parameter: %s", conceptNumParam),
-				)
-				return
-			}
-			conceptNum = int32(value)
-		}
+		vocabNum := utils.ParseAPIReqInt(utils.ParseAPIReqIntProps{
+			NumString:    vocabNumParam,
+			Writer:       writer,
+			ErrorMessage: fmt.Sprintf("invalid vocab parameter: %s", vocabNumParam),
+		})
+		conceptNum := utils.ParseAPIReqInt(utils.ParseAPIReqIntProps{
+			NumString:    conceptNumParam,
+			Writer:       writer,
+			ErrorMessage: fmt.Sprintf("invalid concept parameter: %s", conceptNumParam),
+		})
 
 		grammarConceptsRes, err := api.DBQueries.GetRandomGrammarConcepts(request.Context(), conceptNum)
 		if err != nil {
